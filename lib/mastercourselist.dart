@@ -775,6 +775,7 @@ List<Mastercourselist> mcourselist = [
     id: "BITS F226",
     credits: 3,
   ),
+  Mastercourselist(title: "Foundations of Data Structures and Algorithms", id: "BITS F232", credits: 4),
   Mastercourselist(title: "Practice School I", id: "BITS F231", credits: 5),
   Mastercourselist(title: "Practice School I", id: "BITS F241", credits: 3),
   Mastercourselist(
@@ -1434,7 +1435,7 @@ List<Mastercourselist> mcourselist = [
   Mastercourselist(
     title: "Electromagnetic Fields & Microwave Engineering",
     id: "ECE F314",
-    credits: 3,
+    credits: 4,
   ),
   Mastercourselist(title: "Analog Electronics", id: "ECE F341", credits: 4),
   Mastercourselist(title: "Communication Networks", id: "ECE F343", credits: 3),

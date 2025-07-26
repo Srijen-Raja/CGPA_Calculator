@@ -745,6 +745,8 @@ class _MyHomePageState extends State<MyHomePage> {
                             alignment: Alignment.centerLeft,
                             scale: 0.75,
                             child: DropdownMenu(
+                                 enableSearch: false,
+                              enableFilter: false,
                               initialSelection: currentsem,
                               onSelected: (String? value) {
                                 setState(() {
