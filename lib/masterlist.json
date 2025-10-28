@@ -455,6 +455,11 @@
     "credits": 3
   },
   {
+    "title": "Biological Chemistry",
+    "id": "BIOT F211",
+    "credits": 3
+  },
+  {
     "title": "Microbiology",
     "id": "BIOT F212",
     "credits": 4
@@ -598,6 +603,11 @@
     "title": "Food Biotechnology",
     "id": "BIOT F424",
     "credits": 3
+  },
+  {
+    "title": "Biology Laboratory",
+    "id": "BIO F110",
+    "credits": 1
   },
   {
     "title": "General Biology",
@@ -895,6 +905,11 @@
     "credits": 5
   },
   {
+    "title": "Mechanics of Solids",
+    "id": "CE F211",
+    "credits": 3
+  },
+  {
     "title": "Surveying",
     "id": "CE F213",
     "credits": 4
@@ -1127,6 +1142,11 @@
   {
     "title": "Special Projects",
     "id": "CE F491",
+    "credits": 3
+  },
+  {
+    "title": "Bioethics and Biosafety",
+    "id": "BITS F467",
     "credits": 3
   },
   {
@@ -1600,6 +1620,11 @@
     "credits": 3
   },
   {
+    "title": "Chemical Process Calculations",
+    "id": "CHE F211",
+    "credits": 3
+  },
+  {
     "title": "Fluid Mechanics",
     "id": "CHE F212",
     "credits": 3
@@ -1930,6 +1955,11 @@
     "credits": 5
   },
   {
+    "title": "Physical Chemistry I",
+    "id": "CHEM F211",
+    "credits": 3
+  },
+  {
     "title": "Organic Chemistry I",
     "id": "CHEM F212",
     "credits": 3
@@ -2155,6 +2185,11 @@
     "credits": 5
   },
   {
+    "title": "Modern Control Systems",
+    "id": "ECE F422",
+    "credits": 3
+  },
+  {
     "title": "Electrical Machines",
     "id": "ECE F211",
     "credits": 4
@@ -2327,6 +2362,11 @@
   {
     "title": "Special Projects",
     "id": "ECE F491",
+    "credits": 3
+  },
+  {
+    "title": "Principles of Economics",
+    "id": "ECON F211",
     "credits": 3
   },
   {
@@ -2545,6 +2585,11 @@
     "credits": 3
   },
   {
+    "title": "Financial Management",
+    "id": "FIN F211",
+    "credits": 3
+  },
+  {
     "title": "Fundamentals of Finance and Accounts",
     "id": "FIN F212",
     "credits": 3
@@ -2632,6 +2677,11 @@
   {
     "title": "Special Projects",
     "id": "FIN F491",
+    "credits": 3
+  },
+  {
+    "title": "Modern Political Concepts",
+    "id": "GS F211",
     "credits": 3
   },
   {
@@ -2822,6 +2872,11 @@
   {
     "title": "Special Projects",
     "id": "GS F491",
+    "credits": 3
+  },
+  {
+    "title": "Readings from Drama",
+    "id": "HSS F221",
     "credits": 3
   },
   {
@@ -3230,6 +3285,11 @@
     "credits": 3
   },
   {
+    "title": "Electrical Machines",
+    "id": "INSTR F211",
+    "credits": 4
+  },
+  {
     "title": "Electromagnetic Theory",
     "id": "INSTR F212",
     "credits": 3
@@ -3405,6 +3465,11 @@
     "credits": 5
   },
   {
+    "title": "Data Structures and Algorithms",
+    "id": "IS F211",
+    "credits": 4
+  },
+  {
     "title": "Object Oriented Programming",
     "id": "IS F213",
     "credits": 4
@@ -3505,6 +3570,11 @@
     "credits": 3
   },
   {
+    "title": "Linear Algebra and Applications",
+    "id": "MAC F211",
+    "credits": 3
+  },
+  {
     "title": "Object Oriented Programming",
     "id": "MAC F212",
     "credits": 4
@@ -3573,6 +3643,11 @@
     "title": "Computations Partial Differential Equations",
     "id": "MAC F342",
     "credits": 4
+  },
+  {
+    "title": "Mathematics III",
+    "id": "MATH F211",
+    "credits": 3
   },
   {
     "title": "Optimization",
@@ -3813,6 +3888,11 @@
     "title": "Wavelet Analysis and Applications",
     "id": "MATH F492",
     "credits": 4
+  },
+  {
+    "title": "Mechanics of Solids",
+    "id": "ME F211",
+    "credits": 3
   },
   {
     "title": "Fluid Mechanics",
@@ -4165,6 +4245,11 @@
     "credits": 5
   },
   {
+    "title": "Mechanics of Solids",
+    "id": "MF F211",
+    "credits": 3
+  },
+  {
     "title": "Fluid Mechanics",
     "id": "MF F212",
     "credits": 3
@@ -4430,6 +4515,11 @@
     "credits": 3
   },
   {
+    "title": "Principles of Management",
+    "id": "MGTS F211",
+    "credits": 3
+  },
+  {
     "title": "Marketing",
     "id": "MGTS F311",
     "credits": 3
@@ -4453,6 +4543,11 @@
     "title": "Advertising and Sales Promotion",
     "id": "MGTS F433",
     "credits": 3
+  },
+  {
+    "title": "Materials Characterisation",
+    "id": "MST F331",
+    "credits": 4
   },
   {
     "title": "Materials Processing",
@@ -4505,9 +4600,24 @@
     "credits": 5
   },
   {
+    "title": "Mechantronics",
+    "id": "MSE G511",
+    "credits": 5
+  },
+  {
+    "title": "Material Characterization Techniques",
+    "id": "MST G521",
+    "credits": 5
+  },
+  {
     "title": "Advanced Composites",
     "id": "MST G522",
     "credits": 5
+  },
+  {
+    "title": "Pharmaceutical Analysis",
+    "id": "PHA F211",
+    "credits": 3
   },
   {
     "title": "Dispensing Pharmacy",
@@ -4707,6 +4817,11 @@
   {
     "title": "Special Projects",
     "id": "PHA F491",
+    "credits": 3
+  },
+  {
+    "title": "General Physics",
+    "id": "PHY F112",
     "credits": 3
   },
   {
@@ -4967,6 +5082,11 @@
   {
     "title": "Special Projects",
     "id": "PHY F491",
+    "credits": 3
+  },
+  {
+    "title": "Electrical Sciences",
+    "id": "EEE F111",
     "credits": 3
   },
   {
