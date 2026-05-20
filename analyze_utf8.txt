@@ -1,0 +1,82 @@
+﻿Resolving dependencies...
+Downloading packages...
+  _fe_analyzer_shared 67.0.0 (98.0.0 available)
+  analyzer 6.4.1 (12.0.0 available)
+  archive 4.0.7 (4.0.9 available)
+  async 2.13.0 (2.13.1 available)
+  build 2.4.1 (4.0.5 available)
+  build_config 1.1.2 (1.3.0 available)
+  build_daemon 4.0.4 (4.1.1 available)
+  build_resolvers 2.4.2 (3.0.4 available)
+  build_runner 2.4.13 (2.13.1 available)
+  build_runner_core 7.3.2 (9.3.2 available)
+  built_value 8.11.1 (8.12.5 available)
+  characters 1.4.0 (1.4.1 available)
+  code_builder 4.10.1 (4.11.1 available)
+  crypto 3.0.6 (3.0.7 available)
+  cupertino_icons 1.0.8 (1.0.9 available)
+  dart_style 2.3.6 (3.1.8 available)
+  device_info_plus 12.2.0 (12.4.0 available)
+  ffi 2.1.4 (2.2.0 available)
+  get_it 8.2.0 (9.2.1 available)
+  http 1.5.0 (1.6.0 available)
+  image 4.5.4 (4.8.0 available)
+  in_app_update 4.2.3 (4.2.5 available)
+  json_annotation 4.9.0 (4.11.0 available)
+  leak_tracker 11.0.1 (11.0.2 available)
+  matcher 0.12.17 (0.12.19 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  meta 1.16.0 (1.18.2 available)
+  msix 3.16.12 (3.16.13 available)
+  path_provider_android 2.2.17 (2.2.23 available)
+  path_provider_foundation 2.4.1 (2.6.0 available)
+  permission_handler 11.4.0 (12.0.1 available)
+  permission_handler_android 12.1.0 (13.0.1 available)
+  petitparser 7.0.1 (7.0.2 available)
+  pool 1.5.1 (1.5.2 available)
+  posix 6.0.3 (6.5.0 available)
+  saver_gallery 4.0.1 (4.1.0 available)
+  shelf_web_socket 2.0.1 (3.0.0 available)
+  source_gen 1.5.0 (4.2.2 available)
+  source_helper 1.3.5 (1.3.11 available)
+  source_span 1.10.1 (1.10.2 available)
+  test_api 0.7.6 (0.7.11 available)
+  url_launcher_android 6.3.17 (6.3.29 available)
+  url_launcher_ios 6.3.3 (6.4.1 available)
+  url_launcher_linux 3.2.1 (3.2.2 available)
+  url_launcher_macos 3.2.2 (3.2.5 available)
+  url_launcher_web 2.4.1 (2.4.2 available)
+  url_launcher_windows 3.1.4 (3.1.5 available)
+  uuid 4.5.2 (4.5.3 available)
+  vector_math 2.2.0 (2.3.0 available)
+  vm_service 15.0.0 (15.0.2 available)
+  watcher 1.1.2 (1.2.1 available)
+  win32 5.15.0 (6.0.0 available)
+  win32_registry 2.1.0 (3.0.2 available)
+Got dependencies!
+53 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Analyzing CGPA_Calculator...                                    
+
+warning - The include file 'package:flutter_lints/flutter.yaml' in 'C:\Users\srije\StudioProjects\CGPA_Calculator\analysis_options.yaml' can't be found when analyzing 'C:\Users\srije\StudioProjects\CGPA_Calculator' - analysis_options.yaml:10:10 - include_file_not_found
+warning - Unused import: 'package:path/path.dart' - lib\home_page.dart:3:8 - unused_import
+warning - Unused import: 'package:screen_retriever/screen_retriever.dart' - lib\home_page.dart:14:8 - unused_import
+warning - Unused import: 'package:window_manager/window_manager.dart' - lib\home_page.dart:15:8 - unused_import
+warning - Unused import: 'package:cgpa_calculator/offshoot.dart' - lib\main.dart:2:8 - unused_import
+warning - Unused import: 'package:cgpa_calculator/analytics.dart' - lib\main.dart:4:8 - unused_import
+warning - Unused import: 'package:marquee/marquee.dart' - lib\main.dart:11:8 - unused_import
+warning - Unused import: 'package:cgpa_calculator/settings.dart' - lib\main.dart:15:8 - unused_import
+warning - Unused import: 'package:cgpa_calculator/constants.dart' - lib\main.dart:18:8 - unused_import
+warning - Unused import: 'dart:math' - lib\main.dart:19:8 - unused_import
+warning - Unused import: 'package:in_app_update/in_app_update.dart' - lib\main.dart:20:8 - unused_import
+warning - Unused import: 'package:url_launcher/url_launcher.dart' - lib\main.dart:21:8 - unused_import
+  error - Expected to find ')' - lib\main_ui_extension.dart:1522:21 - expected_token
+warning - Unused import: 'package:flutter/material.dart' - lib\mastercourselist.dart:4:8 - unused_import
+warning - Unused import: 'package:cgpa_calculator/settings.dart' - lib\offshoot.dart:4:8 - unused_import
+warning - Unused import: 'dart:math' - lib\offshoot.dart:8:8 - unused_import
+warning - Unused import: 'package:path/path.dart' - lib\script.dart:4:8 - unused_import
+warning - Unused import: 'package:flutter_media_store/flutter_media_store.dart' - lib\script.dart:13:8 - unused_import
+warning - Unused import: 'package:device_info_plus/device_info_plus.dart' - lib\script.dart:14:8 - unused_import
+warning - Unused import: 'package:path_provider/path_provider.dart' - lib\script.dart:15:8 - unused_import
+warning - The value of the local variable 'coursesBox' isn't used - lib\script.dart:33:9 - unused_local_variable
+

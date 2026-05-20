@@ -5,6 +5,11 @@
     "credits": 3
   },
   {
+    "title": "Semiconductor Fabrication Technology",
+    "id": "EEE F437",
+    "credits": 4
+  },
+  {
     "title": "Innovation and Design Thinking",
     "id": "BITS F102",
     "credits": 1
@@ -3617,7 +3622,7 @@
   {
     "title": "Data Structures & Algorithms",
     "id": "MAC F242",
-    "credits": 3
+    "credits": 4
   },
   {
     "title": "Numerical Optimization",
