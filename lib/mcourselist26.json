@@ -3,5 +3,25 @@
     "id": "PHY U110",
     "title": "Physics Laboratory",
     "ch": 3
+  },
+  {
+    "id": "MATH U101",
+    "title": "Multivaiable Calculus",
+    "ch": 10
+  },
+  {
+    "id": "MATH U110",
+    "title": "Essential Precalculus And Calculus",
+    "ch": 10
+  },
+  {
+    "id": "PHY U101",
+    "title": "Classical And Quantum Waves",
+    "ch": 7
+  },
+  {
+    "id": "PHY U102",
+    "title": "Introduction To Classical And Quantum Waves",
+    "ch": 7
   }
 ]
