@@ -1,6 +1,13 @@
-[{
-    "title": "Physics Laboratory",
-    "id": "PHY U110",
+[
+  {
+    "code": "PHY U110",
+    "name": "Physics Laboratory",
+    "units": 3,
     "ch": 3
+  },
+  {
+    "code": "PHY U111",
+    "name": "Test",
+    "units": 3
   }
 ]
