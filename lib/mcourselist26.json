@@ -23,5 +23,35 @@
     "id": "PHY U102",
     "title": "Introduction To Classical And Quantum Waves",
     "ch": 7
+  },
+  {
+    "id": "BITS U103",
+    "title": "Engineering Design And Prototyping",
+    "ch": 12
+  },
+  {
+    "id": "BIO U101",
+    "title": "Introduction To Biological Sciences",
+    "ch": 9
+  },
+  {
+    "id": "CHEM U101",
+    "title": "Atomic Structures, Bonding, And Spectroscopy",
+    "ch": 7
+  },
+  {
+    "id": "CHEM U102",
+    "title": "Structure And Reactivity Of Molecules",
+    "ch": 7
+  },
+  {
+    "id": "CHEM U101",
+    "title": "Chemistry Laboratory",
+    "ch": 3
+  },
+  {
+    "id": "BITS F104",
+    "title": "Foundations Of Measurement And Experimentation",
+    "ch": 6
   }
 ]
