@@ -53,5 +53,25 @@
     "id": "BITS F104",
     "title": "Foundations Of Measurement And Experimentation",
     "ch": 6
-  }
+  },
+  {
+    "title": "Innovation and Design Thinking",
+    "id": "MGTS U102",
+    "ch": 3
+  },
+  {
+    "title": "Probability & Statistics",
+    "id": "MATH U113",
+    "ch": 12
+  },
+  {
+    "title": "Computational Thinking and Programming",
+    "id": "CS U111",
+    "ch": 12
+  },
+  {
+    "title": "Electrical Sciences",
+    "id": "EEE U111",
+    "ch": 10
+  },
 ]
