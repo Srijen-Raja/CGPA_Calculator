@@ -1,4 +1,4 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -3524,9 +3524,16 @@ List<Mastercourselist> parseCourseJson(String body) {
 }
 
 Future<List<Mastercourselist>> fetchData({bool ch = false}) async {
-  final url = ch ? _chUrl : _legacyUrl;
+  // Cache-bust: raw.githubusercontent serves an edited file from its CDN for
+  // a while, which would keep removed courses alive in the picker.
+  final url =
+      '${ch ? _chUrl : _legacyUrl}'
+      '?t=${DateTime.now().millisecondsSinceEpoch}';
   try {
-    final response = await http.get(Uri.parse(url));
+    final response = await http.get(
+      Uri.parse(url),
+      headers: const {'Cache-Control': 'no-cache', 'Pragma': 'no-cache'},
+    );
     if (response.statusCode == 200) {
       final fetchedlist = parseCourseJson(response.body);
       if (fetchedlist.isEmpty) return _fallbackList(ch);
@@ -3542,18 +3549,19 @@ Future<List<Mastercourselist>> fetchData({bool ch = false}) async {
   }
 }
 
-// The legacy list ships with the app; the credit-hours one does not, so the
-// best it can fall back to is the last copy that was saved locally.
+// When a fetch fails, keep using the last copy that was cached. Only the
+// legacy list has a bundled copy to fall back to beyond that.
 Future<List<Mastercourselist>> _fallbackList(bool ch) async {
-  if (!ch) return bundledMcourselist;
-  if (kIsWeb) return <Mastercourselist>[];
-  try {
-    final file = File(await _getFilePath(true));
-    if (await file.exists()) {
-      return parseCourseJson(await file.readAsString());
-    }
-  } catch (_) {}
-  return <Mastercourselist>[];
+  if (!kIsWeb) {
+    try {
+      final file = File(await _getFilePath(ch));
+      if (await file.exists()) {
+        final parsed = parseCourseJson(await file.readAsString());
+        if (parsed.isNotEmpty) return parsed;
+      }
+    } catch (_) {}
+  }
+  return ch ? <Mastercourselist>[] : bundledMcourselist;
 }
 
 Future<void> convertAndSaveToJsonFile(
@@ -3569,14 +3577,21 @@ Future<void> convertAndSaveToJsonFile(
   await file.writeAsString(jsonString);
 }
 
-Future<List<Mastercourselist>> loadMcourselistFromFile({bool ch = false}) async {
-  if (kIsWeb) return fetchData(ch: ch);
-  try {
-    final file = File(await _getFilePath(ch));
-    if (await file.exists()) {
-      final parsed = parseCourseJson(await file.readAsString());
-      if (parsed.isNotEmpty) return parsed;
-    }
-  } catch (_) {}
-  return fetchData(ch: ch);
+// Reads the cached copy. With allowFetch false this never touches the network:
+// that is how startup loads the list, so launching is never blocked on it.
+Future<List<Mastercourselist>> loadMcourselistFromFile({
+  bool ch = false,
+  bool allowFetch = true,
+}) async {
+  if (!kIsWeb) {
+    try {
+      final file = File(await _getFilePath(ch));
+      if (await file.exists()) {
+        final parsed = parseCourseJson(await file.readAsString());
+        if (parsed.isNotEmpty) return parsed;
+      }
+    } catch (_) {}
+  }
+  if (allowFetch) return fetchData(ch: ch);
+  return ch ? <Mastercourselist>[] : bundledMcourselist;
 }

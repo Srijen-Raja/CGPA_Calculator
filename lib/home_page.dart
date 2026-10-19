@@ -38,11 +38,9 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (!kIsWeb || usesCreditHours) {
-        mcourselist = await fetchData(ch: usesCreditHours);
-        resetAddCourseSelection();
-        if (mounted) setState(() {});
-      }
+      // One refresh per launch; everything after this reads the cached copy.
+      await refreshMasterCourseList();
+      if (mounted) setState(() {});
       if (!kIsWeb) {
         if (Platform.isAndroid) {
           final updateInfo = await InAppUpdate.checkForUpdate();

@@ -60,14 +60,22 @@ List<String> get activeDepts {
   return found.isEmpty ? depts : found;
 }
 
+// Which lists have already been pulled from the network this launch
+// (false = legacy mcourselist.json, true = mcourselist26.json).
+final Set<bool> _fetchedThisLaunch = {};
+
 // Loads the master course list that matches the selected batch:
 // mcourselist26.json (credit hours) for 2026 onwards, mcourselist.json before.
-Future<void> refreshMasterCourseList({bool forceFetch = false}) async {
+// The network is hit once per list per launch; after that the cached copy is
+// used.
+Future<void> refreshMasterCourseList() async {
   final ch = usesCreditHours;
-  mcourselist =
-      forceFetch
-          ? await fetchData(ch: ch)
-          : await loadMcourselistFromFile(ch: ch);
+  if (!_fetchedThisLaunch.contains(ch)) {
+    mcourselist = await fetchData(ch: ch);
+    _fetchedThisLaunch.add(ch);
+  } else {
+    mcourselist = await loadMcourselistFromFile(ch: ch);
+  }
   resetAddCourseSelection();
 }
 

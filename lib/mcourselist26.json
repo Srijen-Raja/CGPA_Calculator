@@ -1,12 +1,7 @@
 [
   {
-    "title": "Physics Laboratory",
     "id": "PHY U110",
-    "ch": 3
-  },
-  {
-    "title": "Test",
-    "id": "PHY U111",
+    "title": "Physics Laboratory",
     "ch": 3
   }
 ]

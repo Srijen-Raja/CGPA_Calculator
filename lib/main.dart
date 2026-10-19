@@ -41,10 +41,12 @@ void main() async {
   Hive.registerAdapter(CourseAdapter());
   //await Hive.openBox<Course>('coursesBox');
   await basicStartup();
-  if (!kIsWeb || usesCreditHours) {
-    mcourselist = await loadMcourselistFromFile(ch: usesCreditHours);
-    resetAddCourseSelection();
-  }
+  // Cached copy only - the single network refresh runs after the first frame.
+  mcourselist = await loadMcourselistFromFile(
+    ch: usesCreditHours,
+    allowFetch: false,
+  );
+  resetAddCourseSelection();
   //await initializeCourses();
   //await Future.delayed(Duration(milliseconds: 40));
   if (!kIsWeb) {
