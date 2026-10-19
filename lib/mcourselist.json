@@ -9,10 +9,20 @@
     "id": "EEE F437",
     "credits": 4
   },
+    {
+    "title": "Prototyping",
+    "id": "BITS F103",
+    "credits": 4
+  },
   {
-    "title": "Innovation and Design Thinking",
+    "title": "Innovation & Design Thinking",
     "id": "BITS F102",
     "credits": 1
+  },
+  {
+    "title": "Internet of Things",
+    "id": "EEE F411",
+    "credits": 4
   },
   {
     "title": "Oscillations and Waves",
@@ -667,6 +677,11 @@
   {
     "title": "Water, Sanitation and Solid Waste Management",
     "id": "BIO F216",
+    "credits": 3
+  },
+  {
+    "title": "FPGA Based System Design",
+    "id": "EEE F314",
     "credits": 3
   },
   {
@@ -1348,6 +1363,12 @@
     "title": "Foundations of Data Structures and Algorithms",
     "id": "BITS F232",
     "credits": 4
+  },
+  
+  {
+    "title": "Environmental Chemistry and Environmental Biotechnology",
+    "id": "ENVS F212",
+    "credits": 3
   },
   {
     "title": "Practice School I",
@@ -2247,11 +2268,6 @@
   {
     "title": "Microelectronic Circuits",
     "id": "ECE F244",
-    "credits": 3
-  },
-  {
-    "title": "FGPA Lab",
-    "id": "EEE F314",
     "credits": 3
   },
   {

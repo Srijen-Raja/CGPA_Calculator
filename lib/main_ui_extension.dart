@@ -1,4 +1,4 @@
-part of 'home_page.dart';
+﻿part of 'home_page.dart';
 // ignore_for_file: invalid_use_of_protected_member
 
 extension MainUiExtension on _MyHomePageState {
@@ -322,7 +322,7 @@ extension MainUiExtension on _MyHomePageState {
                                           ),
                                         ),
                                         Text(
-                                          "Credits (S)",
+                                          "$creditLabel (S)",
                                           style: TextStyle(
                                             fontFamily: 'Montserrat',
                                             fontSize: 16,
@@ -341,7 +341,7 @@ extension MainUiExtension on _MyHomePageState {
                                           ),
                                         ),
                                         Text(
-                                          "Credits (C)",
+                                          "$creditLabel (C)",
                                           style: TextStyle(
                                             fontFamily: 'Montserrat',
                                             fontSize: 16,
@@ -534,7 +534,7 @@ extension MainUiExtension on _MyHomePageState {
                             child: Row(
                               children: [
                                 Text(
-                                  "Credits",
+                                  "$creditLabel",
                                   style: TextStyle(
                                     color: thm.textcolor,
                                     fontSize: 15,
@@ -604,7 +604,7 @@ extension MainUiExtension on _MyHomePageState {
                             child: Row(
                               children: [
                                 Text(
-                                  "Credits",
+                                  "$creditLabel",
                                   style: TextStyle(
                                     color: thm.textcolor,
                                     fontSize: 15,
@@ -663,7 +663,6 @@ extension MainUiExtension on _MyHomePageState {
                         ),
                         onPressed: () {
                           setState(() {
-                            _isSearched = false;
                             _isCardOpen = true;
                           });
                         },
@@ -743,7 +742,7 @@ extension MainUiExtension on _MyHomePageState {
                                 Icons.keyboard_arrow_down_outlined,
                                 color: thm.textcolor,
                               ),
-                              label: "Asc Credits",
+                              label: "Asc $creditLabel",
                               style: MenuItemButton.styleFrom(
                                 textStyle: TextStyle(fontFamily: 'Montserrat'),
                                 foregroundColor: thm.textcolor,
@@ -757,7 +756,7 @@ extension MainUiExtension on _MyHomePageState {
                                 Icons.keyboard_arrow_up_outlined,
                                 color: thm.textcolor,
                               ),
-                              label: "Desc Credits",
+                              label: "Desc $creditLabel",
                               style: MenuItemButton.styleFrom(
                                 textStyle: TextStyle(fontFamily: 'Montserrat'),
                                 foregroundColor: thm.textcolor,
@@ -1193,7 +1192,7 @@ extension MainUiExtension on _MyHomePageState {
                                                     initialItemIndex = grades
                                                         .indexOf(currentGradeStr);
                                                     if (initialItemIndex == -1 &&
-                                                        currentGradeStr == "–")
+                                                        currentGradeStr == "â€“")
                                                       initialItemIndex = grades
                                                           .indexOf("GD");
                                                     if (initialItemIndex == -1)
@@ -1530,7 +1529,7 @@ extension MainUiExtension on _MyHomePageState {
                                                                           sitems[index]
                                                                               .grade1,
                                                                         )
-                                                                        : "–")
+                                                                        : "â€“")
                                                                     .length) ==
                                                                 2
                                                             ? (sitems[index]
@@ -1540,7 +1539,7 @@ extension MainUiExtension on _MyHomePageState {
                                                                   sitems[index]
                                                                       .grade1,
                                                                 )
-                                                                : "–" + "‎ "
+                                                                : "â€“" + "â€Ž "
                                                             : ((sitems[index]
                                                                             .grade1 >
                                                                         0)
@@ -1548,8 +1547,8 @@ extension MainUiExtension on _MyHomePageState {
                                                                       sitems[index]
                                                                           .grade1,
                                                                     )
-                                                                    : "–") +
-                                                                "‎ ‎ ",
+                                                                    : "â€“") +
+                                                                "â€Ž â€Ž ",
 
                                                         textAlign:
                                                             TextAlign.right,
@@ -1573,7 +1572,7 @@ extension MainUiExtension on _MyHomePageState {
                                                     SizedBox(
                                                       width: wid * 0.0945,
                                                       child: Text(
-                                                        "‎" +
+                                                        "â€Ž" +
                                                             ((sitems[index]
                                                                         .grade2 >
                                                                     0)
@@ -1581,7 +1580,7 @@ extension MainUiExtension on _MyHomePageState {
                                                                   sitems[index]
                                                                       .grade2,
                                                                 )
-                                                                : "–"),
+                                                                : "â€“"),
                                                         textAlign:
                                                             TextAlign.left,
                                                         style: TextStyle(

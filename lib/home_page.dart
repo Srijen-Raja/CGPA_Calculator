@@ -1,4 +1,4 @@
-import 'dart:io';
+﻿import 'dart:io';
 import 'dart:async';
 import 'package:cgpa_calculator/offshoot.dart';
 import 'package:cgpa_calculator/analytics.dart';
@@ -38,8 +38,10 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (!kIsWeb) {
-        mcourselist = await fetchData();
+      if (!kIsWeb || usesCreditHours) {
+        mcourselist = await fetchData(ch: usesCreditHours);
+        resetAddCourseSelection();
+        if (mounted) setState(() {});
       }
       if (!kIsWeb) {
         if (Platform.isAndroid) {
@@ -109,7 +111,6 @@ class _MyHomePageState extends State<MyHomePage> {
   bool _isDisciplineChanged = false;
   bool _isCourseCardOpen = false;
   bool _isrightswipe = true;
-  bool _isSearched = false;
   TextEditingController _batchController1 = TextEditingController(
     text: batch.toString(),
   );

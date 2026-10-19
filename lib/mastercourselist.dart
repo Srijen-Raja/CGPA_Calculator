@@ -1,13 +1,16 @@
-import 'dart:convert';
+﻿import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
 class Mastercourselist {
   final String title;
   final String id;
+
+  // From the 2026 batch on this is the course's credit hours ("ch" upstream);
+  // it is the same number, under a new name.
   final double credits;
 
   Mastercourselist({
@@ -16,13 +19,19 @@ class Mastercourselist {
     required this.credits,
   });
 
-  Map<String, dynamic> toJson() {
-    return {'title': title, 'id': id, 'credits': credits};
+  // 2026 onwards: {"title": ..., "id": ..., "ch": ...}
+  // Legacy:       {"title": ..., "id": ..., "credits": ...}
+  Map<String, dynamic> toJson({bool ch = false}) {
+    return {
+      'title': title,
+      'id': id,
+      if (ch) 'ch': credits else 'credits': credits,
+    };
   }
 }
 
 // -1NC, -2CLR,-3GD, not included in cgcalculation- edit
-List<Mastercourselist> mcourselist = [
+final List<Mastercourselist> bundledMcourselist = [
   Mastercourselist(
     title: "Linear Algebra and Complex Variables",
     id: "MATH F102",
@@ -748,7 +757,7 @@ List<Mastercourselist> mcourselist = [
     credits: 3,
   ),
   Mastercourselist(
-    title: "Human – Computer Interaction",
+    title: "Human â€“ Computer Interaction",
     id: "BITS F364",
     credits: 3,
   ),
@@ -1902,7 +1911,7 @@ List<Mastercourselist> mcourselist = [
     credits: 3,
   ),
   Mastercourselist(
-    title: "Philosophy of Nāgārjuna",
+    title: "Philosophy of NÄgÄrjuna",
     id: "HSS F246",
     credits: 3,
   ),
@@ -1979,12 +1988,12 @@ List<Mastercourselist> mcourselist = [
     credits: 3,
   ),
   Mastercourselist(
-    title: "Musicology – An – Introduction",
+    title: "Musicology â€“ An â€“ Introduction",
     id: "HSS F329",
     credits: 3,
   ),
   Mastercourselist(title: "Appreciation of Art", id: "HSS F330", credits: 3),
-  Mastercourselist(title: "Sankara’s Thoughts", id: "HSS F331", credits: 3),
+  Mastercourselist(title: "Sankaraâ€™s Thoughts", id: "HSS F331", credits: 3),
   Mastercourselist(title: "Cinematic Art", id: "HSS F332", credits: 3),
   Mastercourselist(title: "Comparative Religion", id: "HSS F333", credits: 3),
   Mastercourselist(title: "Srimad Bhagavad Gita", id: "HSS F334", credits: 3),
@@ -3470,71 +3479,104 @@ List<Mastercourselist> mcourselist = [
   ),
 ];
 
-Future<String> _getFilePath() async {
+// The list the app is currently working with: the bundled/legacy one for
+// batches before 2026, the credit-hours one from mcourselist26.json after.
+List<Mastercourselist> mcourselist = bundledMcourselist;
+
+const String _legacyUrl =
+    'https://raw.githubusercontent.com/Srijen-Raja/CGPA_Calculator/refs/heads/master/lib/mcourselist.json';
+const String _chUrl =
+    'https://raw.githubusercontent.com/Srijen-Raja/CGPA_Calculator/refs/heads/master/lib/mcourselist26.json';
+
+Future<String> _getFilePath(bool ch) async {
   final directory = await getApplicationDocumentsDirectory();
-  return '${directory.path}/mcourselist.json';
+  return '${directory.path}/${ch ? 'mcourselist26.json' : 'mcourselist.json'}';
 }
 
-Future<List<Mastercourselist>> fetchData() async {
-  final url =
-      'https://raw.githubusercontent.com/Srijen-Raja/CGPA_Calculator/refs/heads/master/lib/mcourselist.json';
+// The 2026 list is still being written upstream, so tolerate a bare run of
+// objects (no surrounding brackets, trailing comma) as well as a real array.
+List<dynamic> _decodeCourseJson(String body) {
+  try {
+    final decoded = jsonDecode(body);
+    if (decoded is List) return decoded;
+    if (decoded is Map) return [decoded];
+  } catch (_) {}
+  var text = body.trim();
+  if (!text.startsWith('[')) text = '[$text]';
+  text = text.replaceAll(RegExp(r',\s*\]'), ']');
+  final decoded = jsonDecode(text);
+  return (decoded is List) ? decoded : [decoded];
+}
+
+// Accepts both shapes, which differ only in the credits key:
+//   legacy        {"title": "Physics Laboratory", "id": "PHY F110", "credits": 1}
+//   2026 onwards  {"title": "Physics Laboratory", "id": "PHY U110", "ch": 3}
+List<Mastercourselist> parseCourseJson(String body) {
+  return _decodeCourseJson(body)
+      .map<Mastercourselist>(
+        (json) => Mastercourselist(
+          title: json['title'] as String,
+          id: json['id'] as String,
+          credits: ((json['ch'] ?? json['credits']) as num).toDouble(),
+        ),
+      )
+      .toList();
+}
+
+Future<List<Mastercourselist>> fetchData({bool ch = false}) async {
+  final url = ch ? _chUrl : _legacyUrl;
   try {
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
-      final List<dynamic> jsonList = jsonDecode(response.body);
-      //print("Data Fetched");
-      var fetchedlist =
-          jsonList
-              .map<Mastercourselist>(
-                (json) => Mastercourselist(
-                  title: json['title'],
-                  id: json['id'],
-                  credits:
-                      (json['credits'] is int)
-                          ? (json['credits'] as int).toDouble()
-                          : (json['credits'] as double),
-                ),
-              )
-              .toList();
-      await convertAndSaveToJsonFile(fetchedlist);
+      final fetchedlist = parseCourseJson(response.body);
+      if (fetchedlist.isEmpty) return _fallbackList(ch);
+      await convertAndSaveToJsonFile(fetchedlist, ch: ch);
       return fetchedlist;
     } else {
       //print('Failed to load data: ${response.statusCode}');
-      return mcourselist;
+      return _fallbackList(ch);
     }
   } catch (e) {
     //print('Error fetching data: $e');
-    return mcourselist;
+    return _fallbackList(ch);
   }
 }
 
+// The legacy list ships with the app; the credit-hours one does not, so the
+// best it can fall back to is the last copy that was saved locally.
+Future<List<Mastercourselist>> _fallbackList(bool ch) async {
+  if (!ch) return bundledMcourselist;
+  if (kIsWeb) return <Mastercourselist>[];
+  try {
+    final file = File(await _getFilePath(true));
+    if (await file.exists()) {
+      return parseCourseJson(await file.readAsString());
+    }
+  } catch (_) {}
+  return <Mastercourselist>[];
+}
+
 Future<void> convertAndSaveToJsonFile(
-  List<Mastercourselist> mcourselist,
-) async {
+  List<Mastercourselist> mcourselist, {
+  bool ch = false,
+}) async {
+  if (kIsWeb) return;
   List<Map<String, dynamic>> jsonList =
-      mcourselist.map((course) => course.toJson()).toList();
+      mcourselist.map((course) => course.toJson(ch: ch)).toList();
   String jsonString = jsonEncode(jsonList);
-  final path = await _getFilePath();
+  final path = await _getFilePath(ch);
   final file = File(path);
   await file.writeAsString(jsonString);
 }
 
-Future<List<Mastercourselist>> loadMcourselistFromFile() async {
-  final path = await _getFilePath();
-  final file = File(path);
-  if (await file.exists()) {
-    String jsonString = await file.readAsString();
-    List jsonList = jsonDecode(jsonString);
-    return jsonList
-        .map(
-          (json) => Mastercourselist(
-            title: json['title'],
-            id: json['id'],
-            credits: (json['credits'] as num).toDouble(),
-          ),
-        )
-        .toList();
-  } else {
-    return fetchData();
-  }
+Future<List<Mastercourselist>> loadMcourselistFromFile({bool ch = false}) async {
+  if (kIsWeb) return fetchData(ch: ch);
+  try {
+    final file = File(await _getFilePath(ch));
+    if (await file.exists()) {
+      final parsed = parseCourseJson(await file.readAsString());
+      if (parsed.isNotEmpty) return parsed;
+    }
+  } catch (_) {}
+  return fetchData(ch: ch);
 }

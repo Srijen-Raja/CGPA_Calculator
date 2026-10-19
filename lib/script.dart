@@ -1,4 +1,4 @@
-// import 'dart:ffi';
+﻿// import 'dart:ffi';
 import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
@@ -26,6 +26,92 @@ void saveImageWeb(Uint8List bytes, String filename) {
   // anchor.click();
   // anchor.remove();
   // html.Url.revokeObjectUrl(url);
+}
+
+const int earliestBatch = 24;
+
+// Batches from this one onwards have no curriculum of their own yet, so they
+// start with an empty course list in every semester.
+const int emptyCurriculumBatch = 26;
+
+// Newest batch that can be picked, going by today's date. A batch joins in the
+// second half of the calendar year.
+int get latestBatch {
+  final now = DateTime.now();
+  final b = (now.month >= 7 ? now.year : now.year - 1) % 100;
+  return (b < earliestBatch) ? earliestBatch : b;
+}
+
+List<int> get batchOptions =>
+    [for (int b = earliestBatch; b <= latestBatch; b++) b];
+
+// From 2026 the curriculum counts credit hours instead of credits. It is only
+// a rename - every calculation treats the number exactly as before.
+bool get usesCreditHours => batch >= emptyCurriculumBatch;
+
+String get creditLabel => usesCreditHours ? "CH" : "Credits";
+
+// Departments offered by the course list currently in use.
+List<String> get activeDepts {
+  if (!usesCreditHours) return depts;
+  final found =
+      mcourselist.map((course) => course.id.split(" ").first).toSet().toList()
+        ..sort();
+  return found.isEmpty ? depts : found;
+}
+
+// Loads the master course list that matches the selected batch:
+// mcourselist26.json (credit hours) for 2026 onwards, mcourselist.json before.
+Future<void> refreshMasterCourseList({bool forceFetch = false}) async {
+  final ch = usesCreditHours;
+  mcourselist =
+      forceFetch
+          ? await fetchData(ch: ch)
+          : await loadMcourselistFromFile(ch: ch);
+  resetAddCourseSelection();
+}
+
+// Points the Add Course form at a course that exists in the current list.
+void resetAddCourseSelection() {
+  String dept = "AN";
+  if (!mcourselist.any((course) => course.id.startsWith("$dept "))) {
+    dept =
+        mcourselist.isNotEmpty
+            ? mcourselist.first.id.split(" ").first
+            : dept;
+  }
+  addcourse = dept;
+  dropdownid =
+      mcourselist
+          .where((course) => course.id.startsWith("$dept "))
+          .map((course) => course.id.replaceFirst("$dept ", ''))
+          .toList()
+        ..sort((a, b) => a.compareTo(b));
+  addcourseid =
+      dropdownid.contains("F311")
+          ? "F311"
+          : (dropdownid.isNotEmpty ? dropdownid.first : "");
+  electiveSetter();
+}
+
+// Which curriculum a batch follows: 0 = pre-25, 1 = 25, 2 = none yet.
+int curriculumEra(int b) =>
+    (b >= emptyCurriculumBatch) ? 2 : ((b < 25) ? 0 : 1);
+
+List<Course> curriculumFor(int b) {
+  if (b >= emptyCurriculumBatch) return const <Course>[];
+  if (b < 25) {
+    return (selectedcampus == "Hyd")
+        ? hydCourseList
+        : (selectedcampus == "Goa")
+        ? goaCourseList
+        : pilaniCourseList;
+  }
+  return (selectedcampus == "Hyd")
+      ? hydCourseListNew
+      : (selectedcampus == "Goa")
+      ? goaCourseListNew
+      : pilaniCourseListNew;
 }
 
 Future<void> basicStartup() async {
@@ -86,18 +172,7 @@ Future<void> initializeCourses() async {
     await coursesBox.clear();
     String tempsem = "";
     List<String> tempaddedcourses = [];
-    for (var course
-    in ((batch < 25)
-        ? (selectedcampus == "Hyd")
-        ? hydCourseList
-        : (selectedcampus == "Goa")
-        ? goaCourseList
-        : pilaniCourseList
-        : (selectedcampus == "Hyd")
-        ? hydCourseListNew
-        : (selectedcampus == "Goa")
-        ? goaCourseListNew
-        : pilaniCourseListNew)) {
+    for (var course in curriculumFor(batch)) {
       if (course.discipline ==
           ((selecteddiscipline.substring(0, 2) != "--")
               ? selecteddiscipline.substring(0, 2)
@@ -188,18 +263,7 @@ Future<void> initializeCourses() async {
                     : "ccccc"),
       )) {
         String tempsem = "";
-        for (var course
-        in ((batch < 25)
-            ? (selectedcampus == "Hyd")
-            ? hydCourseList
-            : (selectedcampus == "Goa")
-            ? goaCourseList
-            : pilaniCourseList
-            : (selectedcampus == "Hyd")
-            ? hydCourseListNew
-            : (selectedcampus == "Goa")
-            ? goaCourseListNew
-            : pilaniCourseListNew)) {
+        for (var course in curriculumFor(batch)) {
           if (course.discipline ==
               ((selecteddiscipline.substring(0, 2) != "--")
                   ? selecteddiscipline.substring(0, 2)
@@ -300,18 +364,7 @@ Future<void> initializeCourses() async {
       await coursesBox.deleteAll(keysToDelete);
     }
     String tempsem = "";
-    for (var course
-    in ((batch < 25)
-        ? (selectedcampus == "Hyd")
-        ? hydCourseList
-        : (selectedcampus == "Goa")
-        ? goaCourseList
-        : pilaniCourseList
-        : (selectedcampus == "Hyd")
-        ? hydCourseListNew
-        : (selectedcampus == "Goa")
-        ? goaCourseListNew
-        : pilaniCourseListNew)) {
+    for (var course in curriculumFor(batch)) {
       //print("0");
       if (course.discipline == selecteddiscipline.substring(2, 4)) {
         //print("A");
@@ -569,7 +622,7 @@ String gradecalc(int s) {
       : (s == -3)
       ? "GD"
       : (s == -5)
-      ? "–"
+      ? "â€“"
       : "?";
 }
 
@@ -1018,9 +1071,9 @@ Future<String> saveDataAsImage(
     //drawInfoText("CGPA: ${cgpa.toStringAsFixed(2)}", xOffset,yOffset);
     yOffset=25*scale;
     xOffset += 42 * scale;
-    drawInfoText("Credits: $thisSemCredits",xOffset, yOffset);
+    drawInfoText("$creditLabel: $thisSemCredits",xOffset, yOffset);
     yOffset=width*0.82-40*scale;
-    //drawInfoText("Credits: $totalCredits", xOffset,yOffset);
+    //drawInfoText("$creditLabel: $totalCredits", xOffset,yOffset);
   }else{
     drawInfoText("Semester: $semester", xOffset, yOffset);
     yOffset=25*scale;
@@ -1030,9 +1083,9 @@ Future<String> saveDataAsImage(
     drawInfoText("CGPA: ${cgpa.toStringAsFixed(2)}", xOffset,yOffset);
     yOffset=25*scale;
     xOffset += 42 * scale;
-    drawInfoText("Credits: $thisSemCredits",xOffset, yOffset);
+    drawInfoText("$creditLabel: $thisSemCredits",xOffset, yOffset);
     yOffset=width*0.82-40*scale;
-    drawInfoText("Credits: $totalCredits", xOffset,yOffset);
+    drawInfoText("$creditLabel: $totalCredits", xOffset,yOffset);
   }
 
 
@@ -1054,7 +1107,7 @@ Future<String> saveDataAsImage(
 
   // Draw header text
   double x = 0, y = infoHeight;
-  final headers = ['Credits', 'Course', 'Grade'];
+  final headers = [creditLabel, 'Course', 'Grade'];
   for (int i = 0; i < headers.length; i++) {
     textPainter.text = TextSpan(
       text: headers[i],

@@ -1,9 +1,218 @@
-part of 'home_page.dart';
+﻿part of 'home_page.dart';
 // ignore_for_file: invalid_use_of_protected_member
 
 
 
 extension OverlaysExtension on _MyHomePageState {
+  // Picks a course from the master list into the Add Course form.
+  void selectMasterCourse(Mastercourselist item) {
+    setState(() {
+      addcourse = item.id.split(" ")[0];
+      electiveSetter();
+      dropdownid =
+          mcourselist
+              .where((course) => course.id.startsWith(addcourse + ' '))
+              .map((course) => course.id.replaceFirst(addcourse + ' ', ''))
+              .toList();
+      dropdownid.sort((a, b) => a.compareTo(b));
+      addcourseid = item.id.split(" ")[1];
+      electiveSetter();
+    });
+  }
+
+  // Full browsable list of every course, searchable by name or code.
+  void showAllCourses() {
+    final all = [...mcourselist]..sort((a, b) => a.id.compareTo(b.id));
+    String query = '';
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: thm.backcolor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        side: BorderSide(color: thm.sepcolor.withValues(alpha: 0.5)),
+      ),
+      builder: (sheetContext) {
+        return StatefulBuilder(
+          builder: (sheetContext, setSheetState) {
+            final q = query.toLowerCase();
+            final results =
+                all
+                    .where(
+                      (c) =>
+                          q.isEmpty ||
+                          c.title.toLowerCase().contains(q) ||
+                          c.id.toLowerCase().contains(q),
+                    )
+                    .toList();
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(sheetContext).viewInsets.bottom,
+              ),
+              child: SafeArea(
+                child: SizedBox(
+                  height: MediaQuery.of(sheetContext).size.height * 0.8,
+                  child: Column(
+                    children: [
+                      SizedBox(height: 10),
+                      Container(
+                        height: 4,
+                        width: 40,
+                        decoration: BoxDecoration(
+                          color: thm.sepcolor,
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(20, 14, 20, 2),
+                        child: Text(
+                          "All Courses",
+                          style: TextStyle(
+                            fontFamily: 'Montserrat',
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
+                            color: thm.textcolor,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        "${results.length} of ${all.length}",
+                        style: TextStyle(
+                          fontFamily: 'Montserrat',
+                          fontSize: 12,
+                          color: thm.unscolor,
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(20, 12, 20, 10),
+                        child: TextField(
+                          autofocus: false,
+                          style: TextStyle(
+                            fontFamily: 'Montserrat',
+                            fontSize: 15,
+                            color: thm.textcolor,
+                          ),
+                          cursorColor: thm.highcolor,
+                          decoration: InputDecoration(
+                            isDense: true,
+                            hintText: "Search by name or code",
+                            hintStyle: TextStyle(
+                              fontFamily: 'Montserrat',
+                              fontSize: 14,
+                              color: thm.unscolor,
+                            ),
+                            prefixIcon: Icon(
+                              Icons.search_rounded,
+                              size: 20,
+                              color: thm.unscolor,
+                            ),
+                            contentPadding: EdgeInsets.symmetric(vertical: 12),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(
+                                color: thm.sepcolor,
+                                width: 1.2,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(
+                                color: thm.highcolor,
+                                width: 1.5,
+                              ),
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(
+                                color: thm.sepcolor,
+                                width: 1.2,
+                              ),
+                            ),
+                          ),
+                          onChanged:
+                              (value) => setSheetState(() => query = value),
+                        ),
+                      ),
+                      Divider(
+                        height: 1,
+                        thickness: 0.5,
+                        color: thm.sepcolor.withValues(alpha: 0.5),
+                      ),
+                      Expanded(
+                        child:
+                            results.isEmpty
+                                ? Center(
+                                  child: Text(
+                                    "No courses found",
+                                    style: TextStyle(
+                                      fontFamily: 'Montserrat',
+                                      fontSize: 14,
+                                      color: thm.unscolor,
+                                    ),
+                                  ),
+                                )
+                                : ListView.separated(
+                                  padding: EdgeInsets.only(top: 4, bottom: 12),
+                                  itemCount: results.length,
+                                  separatorBuilder:
+                                      (_, __) => Divider(
+                                        height: 1,
+                                        thickness: 0.5,
+                                        indent: 20,
+                                        endIndent: 20,
+                                        color: thm.sepcolor.withValues(
+                                          alpha: 0.25,
+                                        ),
+                                      ),
+                                  itemBuilder: (context, i) {
+                                    final c = results[i];
+                                    return ListTile(
+                                      contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 20,
+                                      ),
+                                      title: Text(
+                                        c.title,
+                                        style: TextStyle(
+                                          fontFamily: 'Montserrat',
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w600,
+                                          color: thm.textcolor,
+                                        ),
+                                      ),
+                                      subtitle: Text(
+                                        "${c.id}  Â·  "
+                                        "${c.credits.toString().replaceAll('.0', '')} cr",
+                                        style: TextStyle(
+                                          fontFamily: 'Montserrat',
+                                          fontSize: 11.5,
+                                          color: thm.unscolor,
+                                        ),
+                                      ),
+                                      trailing: Icon(
+                                        Icons.add_rounded,
+                                        size: 20,
+                                        color: thm.highcolor,
+                                      ),
+                                      onTap: () {
+                                        selectMasterCourse(c);
+                                        Navigator.pop(sheetContext);
+                                      },
+                                    );
+                                  },
+                                ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+
   Widget buildCourseDetailSheet(double wid, double hei, List<Course> sitems) {
     return AnimatedSwitcher(
               duration: Duration(milliseconds: 400),
@@ -19,24 +228,7 @@ extension OverlaysExtension on _MyHomePageState {
                             child: GestureDetector(
                               onTap: () async {
                                 setState(() {
-                                  addcourse = "AN";
-                                  addcourseid = "F311";
-                                  electiveSetter();
-                                  dropdownid =
-                                      mcourselist
-                                          .where(
-                                            (course) => course.id.startsWith(
-                                              "AN" + ' ',
-                                            ),
-                                          )
-                                          .map(
-                                            (course) => course.id.replaceFirst(
-                                              "AN" + ' ',
-                                              '',
-                                            ),
-                                          )
-                                          .toList();
-                                  dropdownid.sort((a, b) => a.compareTo(b));
+                                  resetAddCourseSelection();
                                   _isClosingCourse = true;
                                 });
                                 Future.delayed(Duration(milliseconds: 100));
@@ -519,37 +711,7 @@ extension OverlaysExtension on _MyHomePageState {
                                                           "$addcourse $addcourseid",
                                                         );
                                                         setState(() {
-                                                          addcourse = "AN";
-                                                          addcourseid = "F311";
-                                                          electiveSetter();
-                                                          dropdownid =
-                                                              mcourselist
-                                                                  .where(
-                                                                    (
-                                                                      course,
-                                                                    ) => course
-                                                                        .id
-                                                                        .startsWith(
-                                                                          "AN" +
-                                                                              ' ',
-                                                                        ),
-                                                                  )
-                                                                  .map(
-                                                                    (
-                                                                      course,
-                                                                    ) => course
-                                                                        .id
-                                                                        .replaceFirst(
-                                                                          "AN" +
-                                                                              ' ',
-                                                                          '',
-                                                                        ),
-                                                                  )
-                                                                  .toList();
-                                                          dropdownid.sort(
-                                                            (a, b) =>
-                                                                a.compareTo(b),
-                                                          );
+                                                          resetAddCourseSelection();
                                                           sort(sitems,currentsort);
                                                           _isCourseCardOpen =
                                                               false;
@@ -591,24 +753,7 @@ extension OverlaysExtension on _MyHomePageState {
                             child: GestureDetector(
                               onTap: () async {
                                 setState(() {
-                                  addcourse = "AN";
-                                  addcourseid = "F311";
-                                  electiveSetter();
-                                  dropdownid =
-                                      mcourselist
-                                          .where(
-                                            (course) => course.id.startsWith(
-                                              "AN" + ' ',
-                                            ),
-                                          )
-                                          .map(
-                                            (course) => course.id.replaceFirst(
-                                              "AN" + ' ',
-                                              '',
-                                            ),
-                                          )
-                                          .toList();
-                                  dropdownid.sort((a, b) => a.compareTo(b));
+                                  resetAddCourseSelection();
                                   _isClosing = true;
                                 });
                                 Future.delayed(Duration(milliseconds: 500));
@@ -653,10 +798,7 @@ extension OverlaysExtension on _MyHomePageState {
                                             SizedBox(
                                               width: wid * 0.34,
                                               child: DropdownMenu(
-                                                initialSelection:
-                                                    (_isSearched)
-                                                        ? addcourse
-                                                        : "AN",
+                                                initialSelection: addcourse,
                                                 textStyle: TextStyle(
                                                   fontFamily: 'Montserrat',
                                                   fontSize: 15,
@@ -688,7 +830,7 @@ extension OverlaysExtension on _MyHomePageState {
                                                     dropdownid.sort(
                                                       (a, b) => a.compareTo(b),
                                                     );
-                                                    addcourseid = dropdownid[0];
+                                                    addcourseid = dropdownid.isNotEmpty ? dropdownid[0] : "";
                                                     electiveSetter();
                                                   });
                                                 },
@@ -724,7 +866,7 @@ extension OverlaysExtension on _MyHomePageState {
                                                       ),
                                                 ),
                                                 dropdownMenuEntries:
-                                                    depts
+                                                    activeDepts
                                                         .map(
                                                           (
                                                             id,
@@ -748,10 +890,7 @@ extension OverlaysExtension on _MyHomePageState {
                                             SizedBox(
                                               width: wid * 0.27,
                                               child: DropdownMenu(
-                                                initialSelection:
-                                                    (_isSearched)
-                                                        ? addcourseid
-                                                        : dropdownid[0],
+                                                initialSelection: addcourseid,
                                                 textStyle: TextStyle(
                                                   fontFamily: 'Montserrat',
                                                   fontSize: 15,
@@ -943,7 +1082,6 @@ extension OverlaysExtension on _MyHomePageState {
                                                       ),
                                                       onTap: () {
                                                         setState(() {
-                                                          _isSearched = true;
                                                           addcourse =
                                                               item.id.split(
                                                                 " ",
@@ -991,6 +1129,34 @@ extension OverlaysExtension on _MyHomePageState {
                                                   );
                                                 },
                                               ),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(height: 6),
+                                        SizedBox(
+                                          height: 30,
+                                          child: TextButton.icon(
+                                            onPressed: () => showAllCourses(),
+                                            icon: Icon(
+                                              Icons.list_alt_rounded,
+                                              size: 16,
+                                              color: thm.highcolor,
+                                            ),
+                                            label: Text(
+                                              "View all courses",
+                                              style: TextStyle(
+                                                fontFamily: 'Montserrat',
+                                                fontSize: 13,
+                                                fontWeight: FontWeight.w600,
+                                                color: thm.highcolor,
+                                              ),
+                                            ),
+                                            style: TextButton.styleFrom(
+                                              padding: EdgeInsets.symmetric(
+                                                horizontal: 10,
+                                              ),
+                                              visualDensity:
+                                                  VisualDensity.compact,
                                             ),
                                           ),
                                         ),
@@ -1366,7 +1532,6 @@ extension OverlaysExtension on _MyHomePageState {
                                                   ),
                                                 ),
                                                 onPressed: () {
-                                                  _isSearched = false;
                                                   setState(() {
                                                     if (sitems.any(
                                                       (course) =>
@@ -1400,6 +1565,7 @@ extension OverlaysExtension on _MyHomePageState {
                                                             (course) =>
                                                                 course.id ==
                                                                 "$addcourse $addcourseid",
+                                                            orElse: () => Mastercourselist(id: "", title: "", credits: 0),
                                                           );
                                                       if (selectedprofile ==
                                                           1) {
@@ -1486,35 +1652,7 @@ extension OverlaysExtension on _MyHomePageState {
                                                       selecteddiscipline =
                                                           selecteddiscipline;
                                                       batch = batch;
-                                                      addcourse = "AN";
-                                                      addcourseid = "F311";
-                                                      electiveSetter();
-                                                      dropdownid =
-                                                          mcourselist
-                                                              .where(
-                                                                (
-                                                                  course,
-                                                                ) => course.id
-                                                                    .startsWith(
-                                                                      "AN" +
-                                                                          ' ',
-                                                                    ),
-                                                              )
-                                                              .map(
-                                                                (
-                                                                  course,
-                                                                ) => course.id
-                                                                    .replaceFirst(
-                                                                      "AN" +
-                                                                          ' ',
-                                                                      '',
-                                                                    ),
-                                                              )
-                                                              .toList();
-                                                      dropdownid.sort(
-                                                        (a, b) =>
-                                                            a.compareTo(b),
-                                                      );
+                                                      resetAddCourseSelection();
                                                       sort(sitems,currentsort);
                                                     }
                                                   });
@@ -1918,33 +2056,104 @@ extension OverlaysExtension on _MyHomePageState {
                                               ),
                                             ),
                                             Spacer(flex: 1),
-                                            SizedBox(
-                                              width: 30,
-                                              child: TextField(
-                                                keyboardType:
-                                                    TextInputType.number,
-                                                inputFormatters: <
-                                                  TextInputFormatter
-                                                >[
-                                                  FilteringTextInputFormatter
-                                                      .digitsOnly,
-                                                ],
-                                                controller: _batchController1,
-                                                onSubmitted: (value) {
-                                                  if (_batchController1
-                                                      .text
-                                                      .isNotEmpty) {
-                                                    batch = int.parse(value);
+                                            Theme(
+                                              data: Theme.of(context).copyWith(
+                                                inputDecorationTheme:
+                                                    InputDecorationTheme(
+                                                      isDense: true,
+                                                      contentPadding:
+                                                          EdgeInsets.symmetric(
+                                                            vertical: 8,
+                                                            horizontal: 8,
+                                                          ),
+                                                      constraints:
+                                                          BoxConstraints.tightFor(
+                                                            height: hei * 0.07,
+                                                          ),
+                                                    ),
+                                              ),
+                                              child: DropdownMenu<int>(
+                                                width: 110,
+                                                textStyle: TextStyle(
+                                                  fontSize: 16,
+                                                  fontFamily: 'Montserrat',
+                                                  fontWeight: FontWeight.normal,
+                                                  color: thm.textcolor,
+                                                ),
+                                                initialSelection:
+                                                    batchOptions.contains(batch)
+                                                        ? batch
+                                                        : batchOptions.last,
+                                                inputDecorationTheme:
+                                                    InputDecorationTheme(
+                                                      enabledBorder:
+                                                          OutlineInputBorder(
+                                                            borderSide: BorderSide(
+                                                              color:
+                                                                  thm.bordcolor,
+                                                              width: 1,
+                                                            ),
+                                                          ),
+                                                      focusedBorder:
+                                                          OutlineInputBorder(
+                                                            borderSide: BorderSide(
+                                                              color:
+                                                                  thm.bordcolor,
+                                                              width: 1,
+                                                            ),
+                                                          ),
+                                                      border: OutlineInputBorder(
+                                                        borderSide: BorderSide(
+                                                          color: thm.bordcolor,
+                                                          width: 1,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                menuStyle: MenuStyle(
+                                                  backgroundColor:
+                                                      WidgetStateProperty.all(
+                                                        thm.backcolor,
+                                                      ),
+                                                ),
+                                                dropdownMenuEntries:
+                                                    batchOptions
+                                                        .map(
+                                                          (
+                                                            b,
+                                                          ) => DropdownMenuEntry(
+                                                            value: b,
+                                                            label: "20$b",
+                                                            style: MenuItemButton.styleFrom(
+                                                              textStyle: TextStyle(
+                                                                fontFamily:
+                                                                    'Montserrat',
+                                                              ),
+                                                              foregroundColor:
+                                                                  thm.textcolor,
+                                                            ),
+                                                          ),
+                                                        )
+                                                        .toList(),
+                                                onSelected: (value) async {
+                                                  if (value == null) return;
+                                                  final listChanged =
+                                                      (value >=
+                                                              emptyCurriculumBatch) !=
+                                                          (batch >=
+                                                              emptyCurriculumBatch);
+                                                  if (curriculumEra(batch) !=
+                                                      curriculumEra(value)) {
+                                                    erase = 1;
                                                   }
-                                                  setdis();
-                                                },
-                                                onChanged: (value) {
-                                                  if (_batchController1
-                                                      .text
-                                                      .isNotEmpty) {
-                                                    batch = int.parse(value);
+                                                  batch = value;
+                                                  _batchController1.text =
+                                                      batch.toString();
+                                                  _isDisciplineChanged = true;
+                                                  await setdis();
+                                                  if (listChanged) {
+                                                    await refreshMasterCourseList();
+                                                    if (mounted) setState(() {});
                                                   }
-                                                  setdis();
                                                 },
                                               ),
                                             ),
@@ -1971,38 +2180,11 @@ extension OverlaysExtension on _MyHomePageState {
                                                   if (_isDisciplineChanged) {
                                                     await setdis();
                                                     await initializeCourses();
+                                                    erase = 0;
                                                     sort(sitems,currentsort);
                                                     setState(() {
                                                       selectedgrade = 10;
-                                                      addcourse = "AN";
-                                                      addcourseid = "F311";
-                                                      electiveSetter();
-                                                      dropdownid =
-                                                          mcourselist
-                                                              .where(
-                                                                (
-                                                                  course,
-                                                                ) => course.id
-                                                                    .startsWith(
-                                                                      "AN" +
-                                                                          ' ',
-                                                                    ),
-                                                              )
-                                                              .map(
-                                                                (
-                                                                  course,
-                                                                ) => course.id
-                                                                    .replaceFirst(
-                                                                      "AN" +
-                                                                          ' ',
-                                                                      '',
-                                                                    ),
-                                                              )
-                                                              .toList();
-                                                      dropdownid.sort(
-                                                        (a, b) =>
-                                                            a.compareTo(b),
-                                                      );
+                                                      resetAddCourseSelection();
                                                       sort(sitems,currentsort);
                                                       degree_selected = true;
                                                     });

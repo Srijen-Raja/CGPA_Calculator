@@ -2,7 +2,6 @@ import 'package:cgpa_calculator/constants.dart';
 import 'package:cgpa_calculator/script.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:io';
 import 'package:in_app_review/in_app_review.dart';
@@ -25,7 +24,438 @@ class _SettingsState extends State<Settings> {
     text: profile2n,
   );
   bool _isProfileCardOpen = false;
-  TextEditingController _batchController = TextEditingController(text: batch.toString());
+  TextEditingController _batchController = TextEditingController(
+    text: batch.toString(),
+  );
+
+  static const double _dropWidth = 118;
+
+  // ---------------------------------------------------------------- styling
+
+  Widget _groupHeader(Constants thm, String text) => Padding(
+    padding: EdgeInsets.fromLTRB(20, 20, 20, 6),
+    child: Text(
+      text,
+      style: TextStyle(
+        fontFamily: 'Montserrat',
+        fontSize: 13,
+        fontWeight: FontWeight.bold,
+        color: thm.highcolor,
+      ),
+    ),
+  );
+
+  Widget _groupDivider(Constants thm) => Divider(
+    height: 1,
+    thickness: 0.5,
+    indent: 20,
+    endIndent: 20,
+    color: thm.sepcolor.withValues(alpha: 0.4),
+  );
+
+  Widget _tile(
+    Constants thm, {
+    Key? key,
+    required IconData icon,
+    required String title,
+    String? subtitle,
+    Widget? trailing,
+    VoidCallback? onTap,
+  }) => ListTile(
+    key: key,
+    onTap: onTap,
+    contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 2),
+    horizontalTitleGap: 14,
+    minLeadingWidth: 0,
+    leading: Icon(icon, size: 22, color: thm.iconcolor),
+    title: Text(
+      title,
+      style: TextStyle(
+        fontFamily: 'Montserrat',
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
+        color: thm.textcolor,
+      ),
+    ),
+    subtitle:
+        subtitle == null
+            ? null
+            : Padding(
+              padding: EdgeInsets.only(top: 2),
+              child: Text(
+                subtitle,
+                style: TextStyle(
+                  fontFamily: 'Montserrat',
+                  fontSize: 11.5,
+                  color: thm.unscolor,
+                ),
+              ),
+            ),
+    trailing: trailing,
+  );
+
+  InputDecorationTheme _fieldDeco(Constants thm) => InputDecorationTheme(
+    isDense: true,
+    filled: true,
+    fillColor: thm.cardcolor,
+    contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: BorderSide(color: thm.sepcolor, width: 1.2),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: BorderSide(color: thm.highcolor, width: 1.5),
+    ),
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: BorderSide(color: thm.sepcolor, width: 1.2),
+    ),
+  );
+
+  MenuStyle _menuStyle(Constants thm) => MenuStyle(
+    backgroundColor: WidgetStateProperty.all(thm.backcolor),
+    shape: WidgetStateProperty.all(
+      RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: thm.sepcolor.withValues(alpha: 0.5)),
+      ),
+    ),
+  );
+
+  ButtonStyle _entryStyle(Constants thm) => MenuItemButton.styleFrom(
+    textStyle: TextStyle(fontFamily: 'Montserrat'),
+    foregroundColor: thm.highcolor,
+  );
+
+  TextStyle _fieldText(Constants thm) => TextStyle(
+    fontFamily: 'Montserrat',
+    fontSize: 16,
+    fontWeight: FontWeight.bold,
+    color: thm.highcolor,
+  );
+
+  // --------------------------------------------------------------- controls
+
+  Widget _dualDisciplineField(Constants thm) => SizedBox(
+    width: _dropWidth,
+    child: DropdownMenu<String>(
+      width: _dropWidth,
+      textAlign: TextAlign.center,
+      textStyle: _fieldText(thm),
+      inputDecorationTheme: _fieldDeco(thm),
+      menuStyle: _menuStyle(thm),
+      initialSelection:
+          (selecteddiscipline.length == 4)
+              ? selecteddiscipline.substring(0, 2)
+              : (selecteddiscipline.length == 2 &&
+                  selecteddiscipline.substring(0, 1) == 'B')
+              ? selecteddiscipline.substring(0, 2)
+              : "None",
+      onSelected: (String? value) {
+        setState(() {
+          selectdual = value!;
+          if (selecteddiscipline.substring(0, 2) != selectdual) {
+            erase = 1;
+          }
+          selecteddiscipline = value + selecengg;
+        });
+      },
+      dropdownMenuEntries:
+          degreelist
+              .where((id) => id.startsWith("B"))
+              .map(
+                (id) => DropdownMenuEntry(
+                  value: id,
+                  label: id,
+                  style: _entryStyle(thm),
+                ),
+              )
+              .toList() +
+          [
+            DropdownMenuEntry(
+              value: "B-",
+              label: "Other",
+              style: _entryStyle(thm),
+            ),
+            DropdownMenuEntry(
+              value: "--",
+              label: "None",
+              style: _entryStyle(thm),
+            ),
+          ],
+    ),
+  );
+
+  Widget _disciplineField(Constants thm) => SizedBox(
+    width: _dropWidth,
+    child: DropdownMenu<String>(
+      width: _dropWidth,
+      textAlign: TextAlign.center,
+      textStyle: _fieldText(thm),
+      inputDecorationTheme: _fieldDeco(thm),
+      menuStyle: _menuStyle(thm),
+      initialSelection:
+          (selecteddiscipline.length == 4)
+              ? selecteddiscipline.substring(2, 4)
+              : (selecteddiscipline.length == 2 &&
+                  selecteddiscipline.substring(0, 1) == 'A')
+              ? selecteddiscipline.substring(0, 2)
+              : "Other",
+      onSelected: (String? value) {
+        setState(() {
+          selecengg = value!;
+          if (selecteddiscipline.substring(2, 4) != selecengg) {
+            if (erase != 1 && selecteddiscipline.startsWith("B")) {
+              erase = 2;
+            } else {
+              erase = 1;
+            }
+          }
+          selecteddiscipline = selectdual + value;
+        });
+      },
+      dropdownMenuEntries:
+          degreelist
+              .where((id) => id.startsWith("A"))
+              .map(
+                (id) => DropdownMenuEntry(
+                  value: id,
+                  label: id,
+                  style: _entryStyle(thm),
+                ),
+              )
+              .toList() +
+          [
+            DropdownMenuEntry(
+              value: "--",
+              label: "Other",
+              style: _entryStyle(thm),
+            ),
+          ],
+    ),
+  );
+
+  Widget _batchField(Constants thm) => SizedBox(
+    width: _dropWidth,
+    child: DropdownMenu<int>(
+      width: _dropWidth,
+      textAlign: TextAlign.center,
+      textStyle: _fieldText(thm),
+      inputDecorationTheme: _fieldDeco(thm),
+      menuStyle: _menuStyle(thm),
+      initialSelection:
+          batchOptions.contains(batch) ? batch : batchOptions.last,
+      dropdownMenuEntries:
+          batchOptions
+              .map(
+                (b) => DropdownMenuEntry(
+                  value: b,
+                  label: "20$b",
+                  style: _entryStyle(thm),
+                ),
+              )
+              .toList(),
+      onSelected: (value) async {
+        if (value == null) return;
+        final listChanged =
+            (value >= emptyCurriculumBatch) != (batch >= emptyCurriculumBatch);
+        if (curriculumEra(batch) != curriculumEra(value)) {
+          erase = 1;
+        }
+        setState(() {
+          batch = value;
+          _batchController.text = batch.toString();
+        });
+        await setdis();
+        await initializeCourses();
+        if (listChanged) {
+          await refreshMasterCourseList();
+          if (mounted) setState(() {});
+        }
+      },
+    ),
+  );
+
+  Widget _themeField(Constants thm) => SizedBox(
+    width: _dropWidth,
+    child: DropdownMenu<String>(
+      width: _dropWidth,
+      textAlign: TextAlign.center,
+      textStyle: _fieldText(thm),
+      inputDecorationTheme: _fieldDeco(thm),
+      menuStyle: _menuStyle(thm),
+      initialSelection: selected_theme,
+      onSelected: (String? value) async {
+        selected_theme = value!;
+        thm = themes.firstWhere((theme) => theme.theme == selected_theme);
+        await settheme();
+        setState(() {
+          selected_theme = value;
+          setnavcolor();
+          thm = themes.firstWhere((theme) => theme.theme == selected_theme);
+        });
+      },
+      dropdownMenuEntries:
+          themes
+              .map(
+                (id) => DropdownMenuEntry(
+                  value: id.theme,
+                  label: id.theme,
+                  style: _entryStyle(thm),
+                ),
+              )
+              .toList(),
+    ),
+  );
+
+  // ---------------------------------------------------------------- dialogs
+
+  void _showUpdates(Constants thm) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: thm.backcolor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: BorderSide(color: thm.sepcolor.withValues(alpha: 0.5)),
+          ),
+          title: Text(
+            'Updates',
+            style: TextStyle(fontFamily: 'Montserrat', color: thm.highcolor),
+            textAlign: TextAlign.center,
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                '1) Click on Reset to update courses',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'Montserrat',
+                  color: thm.textcolor,
+                ),
+              ),
+              Text(
+                '2) Play Store Updates will show up as Prompts',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'Montserrat',
+                  color: thm.textcolor,
+                ),
+              ),
+              Text(
+                '3) Bugs / New course requests can be sent from the app itself',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'Montserrat',
+                  color: thm.textcolor,
+                ),
+              ),
+              Text(
+                '4) Updated BITS K101 and BITS F101 to 0.5 credits. Delete and add these courses or use reset to update.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'Montserrat',
+                  color: thm.textcolor,
+                ),
+              ),
+              Text(
+                '5) Minor Offshoot calculator is added to semester dropdown.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'Montserrat',
+                  color: thm.textcolor,
+                ),
+              ),
+              Text(
+                '6) Hold on grade to change quickly.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'Montserrat',
+                  color: thm.textcolor,
+                ),
+              ),
+              Text(
+                '7) Reload and hold the page to clear grades.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'Montserrat',
+                  color: thm.textcolor,
+                ),
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(
+                'Close',
+                style: TextStyle(
+                  fontFamily: 'Montserrat',
+                  color: thm.textcolor,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _confirmReset(Constants thm) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: thm.backcolor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: BorderSide(color: thm.sepcolor.withValues(alpha: 0.5)),
+          ),
+          title: Text(
+            'Reset?',
+            style: TextStyle(fontFamily: 'Montserrat', color: thm.highcolor),
+            textAlign: TextAlign.center,
+          ),
+          content: Text(
+            'Resetting Courses will Delete grade data',
+            style: TextStyle(fontFamily: 'Montserrat', color: thm.textcolor),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(
+                'Cancel',
+                style: TextStyle(
+                  fontFamily: 'Montserrat',
+                  color: thm.textcolor,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () async {
+                erase = 1;
+                await initializeCourses();
+                Navigator.pop(context);
+              },
+              child: Text(
+                'Reset',
+                style: TextStyle(
+                  fontFamily: 'Montserrat',
+                  color: thm.textcolor,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // ------------------------------------------------------------------ build
+
   @override
   Widget build(BuildContext context) {
     var thm = themes.firstWhere((theme) => theme.theme == selected_theme);
@@ -43,546 +473,142 @@ class _SettingsState extends State<Settings> {
         ),
         backgroundColor: thm.backcolor,
         actions: [
-          Transform.scale(scale: 1.2,child: FilledButton(
-            style: FilledButton.styleFrom(backgroundColor: thm.backcolor,
-        shape: CircleBorder()
-            )
-            ,
-            child: Icon(Icons.info_outline_rounded,color: thm.iconcolor,),
-          onPressed: ()=> showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                backgroundColor: thm.backcolor,
-                title: Text('Updates',style: TextStyle(fontFamily: 'Montserrat',color: thm.highcolor),textAlign: TextAlign.center,),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children:
-                [Text('1) Click on Reset to update courses',textAlign: TextAlign.center,style: TextStyle(fontFamily: 'Montserrat',color: thm.textcolor)),
-                  Text('2) Play Store Updates will show up as Prompts',textAlign: TextAlign.center,style: TextStyle(fontFamily: 'Montserrat',color: thm.textcolor)),
-                  Text('3) Bugs / New course requests can be sent from the app itself',textAlign: TextAlign.center,style: TextStyle(fontFamily: 'Montserrat',color: thm.textcolor)),
-                  Text('4) Updated BITS K101 and BITS F101 to 0.5 credits. Delete and add these courses or use reset to update.',textAlign: TextAlign.center,style: TextStyle(fontFamily: 'Montserrat',color: thm.textcolor)),
-                  Text('5) Minor Offshoot calculator is added to semester dropdown.',textAlign: TextAlign.center,style: TextStyle(fontFamily: 'Montserrat',color: thm.textcolor)),
-                  Text('6) Hold on grade to change quickly.',textAlign: TextAlign.center,style: TextStyle(fontFamily: 'Montserrat',color: thm.textcolor)),
-                  Text('7) Reload and hold the page to clear grades.',textAlign: TextAlign.center,style: TextStyle(fontFamily: 'Montserrat',color: thm.textcolor)),
-
-                ],),
-                actions: <Widget>[
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: Text('Close',style: TextStyle(fontFamily: 'Montserrat',color: thm.textcolor),),
-                  ),
-                ],
-              );
-            },
-          ),),),
-        ]
+          IconButton(
+            tooltip: "Updates",
+            icon: Icon(Icons.info_outline_rounded, color: thm.iconcolor),
+            onPressed: () => _showUpdates(thm),
+          ),
+          SizedBox(width: 6),
+        ],
       ),
-      backgroundColor: thm.backcolor, //themes[0].backcolor,
+      backgroundColor: thm.backcolor,
       body: Stack(
         children: [
-          Column(
-            children: [
-              SizedBox(height: 15),
-              Text(
-                "Changing First Discipline Will Delete Grades",
-                softWrap: true,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: thm.textcolor,
-                  fontSize: 12,
-                  fontFamily: 'Montserrat',
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-              SizedBox(height: 15),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                child: Row(
-                  children: [
-                    Column(
-                      children: [
-                        DropdownMenu(
-                          initialSelection:
-                              (selecteddiscipline.length == 4)
-                                  ? selecteddiscipline.substring(0, 2)
-                                  : (selecteddiscipline.length == 2 &&
-                                      selecteddiscipline.substring(0, 1) == 'B')
-                                  ? selecteddiscipline.substring(0, 2)
-                                  : "None",
-                          onSelected: (String? value) {
-                            setState(() {
-                              selectdual = value!;
-                              if (selecteddiscipline.substring(0, 2) != selectdual) {
-                                erase = 1;
-                              }
-                              selecteddiscipline = value + selecengg;
-                            });
-                          },
-                          textAlign: TextAlign.center,
-                          textStyle: TextStyle(
-                            color: thm.highcolor,
-                            fontSize: 18,
-                            fontFamily: 'Montserrat',
-                            fontWeight: FontWeight.bold,
-                          ),
-                          inputDecorationTheme: InputDecorationTheme(
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color:
-                                    thm
-                                        .sepcolor, // Set border color to white
-                                width: 1.5,
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color:
-                                    thm
-                                        .sepcolor, // Set border color to white when focused
-                                width: 1.5,
-                              ),
-                            ),
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color:
-                                    thm
-                                        .sepcolor, // Default border color
-                                width: 1.5,
-                              ),
-                            ),
-                          ),
-                          menuStyle: MenuStyle(
-                            backgroundColor: WidgetStateProperty.all(
-                              thm.backcolor,
-                            ),
-                          ),
-                          dropdownMenuEntries: degreelist.where((id)=> id.startsWith("B")).map((id) => DropdownMenuEntry(value: id, label: id,style: MenuItemButton.styleFrom( textStyle: TextStyle( fontFamily: 'Montserrat', ), foregroundColor: thm .highcolor, ),)).toList() + [DropdownMenuEntry(value: "B-", label: "Other",style: MenuItemButton.styleFrom( textStyle: TextStyle( fontFamily: 'Montserrat', ), foregroundColor: thm .highcolor, ),),DropdownMenuEntry(value: "--", label: "None",style: MenuItemButton.styleFrom( textStyle: TextStyle( fontFamily: 'Montserrat', ), foregroundColor: thm .highcolor, ),)],
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          "Dual Discipline",
-                          style: TextStyle(
-                            color: thm.textcolor,
-                            fontFamily: 'Montserrat',
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    Spacer(flex: 1),
-                    Column(
-                      children: [
-                        DropdownMenu(
-                          initialSelection:
-                              (selecteddiscipline.length == 4)
-                                  ? selecteddiscipline.substring(2, 4)
-                                  : (selecteddiscipline.length == 2 &&
-                                      selecteddiscipline.substring(0, 1) == 'A')
-                                  ? selecteddiscipline.substring(0, 2)
-                                  : "Other",
-                          onSelected: (String? value) {
-                            setState(() {
-                              selecengg = value!;
-                              if (selecteddiscipline.substring(2, 4) !=
-                                  selecengg) {
-                                if (erase != 1 && selecteddiscipline.startsWith("B")) {
-                                  erase = 2;
-                                }
-                                else{
-                                  erase=1;
-                                }
-                              }
-                              selecteddiscipline = selectdual + value;
-                            });
-                          },
-                          textAlign: TextAlign.center,
-                          textStyle: TextStyle(
-                            fontFamily: 'Montserrat',
-                            color: thm.highcolor,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          inputDecorationTheme: InputDecorationTheme(
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color:
-                                    thm
-                                        .sepcolor, // Set border color to white
-                                width: 1.5,
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color:
-                                    thm
-                                        .sepcolor, // Set border color to white when focused
-                                width: 1.5,
-                              ),
-                            ),
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color:
-                                    thm
-                                        .sepcolor, // Default border color
-                                width: 1.5,
-                              ),
-                            ),
-                          ),
-                          menuStyle: MenuStyle(
-                            backgroundColor: WidgetStateProperty.all(
-                              thm.backcolor,
-                            ),
-                          ),
-                          dropdownMenuEntries: degreelist.where((id)=> id.startsWith("A")).map((id) => DropdownMenuEntry(value: id, label: id,style: MenuItemButton.styleFrom( textStyle: TextStyle( fontFamily: 'Montserrat', ), foregroundColor: thm .highcolor, ),)).toList() + [DropdownMenuEntry(value: "--", label: "Other",style: MenuItemButton.styleFrom( textStyle: TextStyle( fontFamily: 'Montserrat', ), foregroundColor: thm .highcolor, ),)],
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          "Discipline",
-                          style: TextStyle(
-                            color: thm.textcolor,
-                            fontFamily: 'Montserrat',
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    //Remove following comment for campus
-                    //Spacer(flex: 1),
-                    // Column(
-                    //   children: [
-                    //     DropdownMenu(
-                    //       initialSelection: selectedcampus,
-                    //       onSelected: (String? value) {
-                    //         setState(() {
-                    //           if(selectedcampus!=value!){
-                    //             erase=1;
-                    //           }
-                    //           selectedcampus = value;
-                    //           setdis();
-                    //         });
-                    //       },
-                    //       textAlign: TextAlign.center,
-                    //       textStyle: TextStyle(
-                    //         fontFamily: 'Montserrat',
-                    //         color: thm.highcolor,
-                    //         fontSize: 18,
-                    //         fontWeight: FontWeight.bold,
-                    //       ),
-                    //       inputDecorationTheme: InputDecorationTheme(
-                    //         enabledBorder: OutlineInputBorder(
-                    //           borderSide: BorderSide(
-                    //             color:
-                    //             thm
-                    //                 .sepcolor, // Set border color to white
-                    //             width: 1.5,
-                    //           ),
-                    //         ),
-                    //         focusedBorder: OutlineInputBorder(
-                    //           borderSide: BorderSide(
-                    //             color:
-                    //             thm
-                    //                 .sepcolor, // Set border color to white when focused
-                    //             width: 1.5,
-                    //           ),
-                    //         ),
-                    //         border: OutlineInputBorder(
-                    //           borderSide: BorderSide(
-                    //             color:
-                    //             thm
-                    //                 .sepcolor, // Default border color
-                    //             width: 1.5,
-                    //           ),
-                    //         ),
-                    //       ),
-                    //       menuStyle: MenuStyle(
-                    //         backgroundColor: WidgetStateProperty.all(
-                    //           thm.backcolor,
-                    //         ),
-                    //       ),
-                    //       dropdownMenuEntries: campuslist.map((id) => DropdownMenuEntry(value: id, label: id,style: MenuItemButton.styleFrom( textStyle: TextStyle( fontFamily: 'Montserrat', ), foregroundColor: thm .highcolor, ),)).toList(),
-                    //     ),
-                    //     SizedBox(height: 10),
-                    //     Text(
-                    //       "Campus",
-                    //       style: TextStyle(
-                    //         color: thm.textcolor,
-                    //         fontFamily: 'Montserrat',
-                    //         fontWeight: FontWeight.bold,
-                    //       ),
-                    //     ),
-                    //   ],
-                    // ),
-                  ],
-                ),
-              ),
-
-              Column(
-                children: [
-                  Row(children: [
-                SizedBox(width: 25,),
-                Text("Batch",style: TextStyle(fontFamily: "Montserrat",fontSize: 16,color: thm.textcolor),),
-                SizedBox(width: 10,),
-                SizedBox(width: 25,child: TextField(keyboardType: TextInputType.number,style: TextStyle(fontFamily: "Montserrat",fontSize: 16,color: thm.textcolor),inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],controller: _batchController,
-                    onChanged: (value){
-                      if (_batchController.text.isNotEmpty) {
-                        if(batch<25 && int.parse(value)>=25){
-                          erase=1;
-                        }
-                        else if(batch>=25 && int.parse(value)<25){
-                          erase =1;
-                        }
-                        batch = int.parse(value);
-                      }
-                      setdis();
-                      initializeCourses();
-                    }),
-                ),
-                Spacer(flex: 1,),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.05,
-                      width: 100,
-                      child: FloatingActionButton(
-                        heroTag: 'settings_reset_btn',
-                        key: ValueKey("Reset"),
-                        elevation: 1,
-                        focusElevation: 0,
-                        hoverElevation: 0,
-                        highlightElevation: 0,
-                        disabledElevation: 0,
-                        backgroundColor: thm.cardcolor,
-                        child: Text(
-                          "Reset",
-                          style: TextStyle(
-                            fontFamily: "Montserrat",
-                            fontSize: 18,
-                            color: thm.highcolor,
-                          ),
-                        ),
-                        onPressed: ()=> showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                              return AlertDialog(
-                                backgroundColor: thm.backcolor,
-                              title: Text('Reset?',style: TextStyle(fontFamily: 'Montserrat',color: thm.highcolor),textAlign: TextAlign.center,),
-                              content: Text('Resetting Courses will Delete grade data',style: TextStyle(fontFamily: 'Montserrat',color: thm.textcolor)),
-                              actions: <Widget>[
-                                TextButton(
-                                  onPressed: () =>Navigator.pop(context),
-                                  child: Text('Cancel',style: TextStyle(fontFamily: 'Montserrat',color: thm.textcolor),),
-                                ),TextButton(
-                              onPressed: () async
-                              {
-                                erase = 1;
-                                await initializeCourses();
-                                Navigator.pop(context);
-                              },
-                              child: Text('Reset',style: TextStyle(fontFamily: 'Montserrat',color: thm.textcolor),),
-                              ),
-                              ],
-                              );
-                        }
-                      ),
-                    ),),
-                    SizedBox(width: 25,)
-                  ],),
-                ],),
-              SizedBox(height: 25),
-              Container(
-                height: 0.5,
-                width: MediaQuery.of(context).size.width * 0.8,
-                color: thm.sepcolor,
-              ),
-              SizedBox(height: 25),
-              Padding(
-                padding: EdgeInsets.only(left: 20, right: 20),
-                child: Row(
-                  children: [
-                    Text(
-                      "Theme",
-                      style: TextStyle(
-                        color:
-                            thm
-                                .textcolor,
-                        fontSize: 20,
-                        fontFamily: 'Montserrat',
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Spacer(flex: 1),
-                    DropdownMenu(
-                      initialSelection: selected_theme,
-                      onSelected: (String? value) async {
-                        selected_theme = value!;
-                        thm = themes.firstWhere((theme) => theme.theme == selected_theme);
-                        await settheme();
-                        setState(() {
-                          selected_theme = value;
-                          setnavcolor();
-                          thm = themes.firstWhere((theme) => theme.theme == selected_theme);
-                        });
-                      },
-                      textAlign: TextAlign.center,
-                      textStyle: TextStyle(
-                        color:
-                            thm
-                                .highcolor,
-                        fontSize: 17,
-                        fontFamily: 'Montserrat',
-                        fontWeight: FontWeight.bold,
-                      ),
-                      inputDecorationTheme: InputDecorationTheme(
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: thm.sepcolor, // Set border color to white
-                            width: 1.5,
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color:
-                                thm.sepcolor, // Set border color to white when focused
-                            width: 1.5,
-                          ),
-                        ),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: thm.sepcolor, // Default border color
-                            width: 1.5,
-                          ),
-                        ),
-                      ),
-                      menuStyle: MenuStyle(
-                        backgroundColor: WidgetStateProperty.all(thm.backcolor),
-                      ),
-                      dropdownMenuEntries: themes.map((id) => DropdownMenuEntry(value: id.theme, label: id.theme,style: MenuItemButton.styleFrom( textStyle: TextStyle( fontFamily: 'Montserrat', ), foregroundColor: thm .highcolor, ),)).toList(),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 20),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.05,
-                    width: MediaQuery.of(context).size.width * 0.90,
-                    child: FloatingActionButton(
-                      heroTag: 'settings_profile_btn',
-                      key: ValueKey("profile"),
-                      elevation: 1,
-                      focusElevation: 0,
-                      hoverElevation: 0,
-                      highlightElevation: 0,
-                      disabledElevation: 0,
-                      backgroundColor: thm.cardcolor,
-                      child: Text(
-                        "Set Profile",
-                        style: TextStyle(
-                          fontFamily: "Montserrat",
-                          fontSize: 18,
-                          color: thm.highcolor,
-                        ),
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _isProfileCardOpen = true;
-                        });
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 25),
-              Container(
-                height: 0.5,
-                width: MediaQuery.of(context).size.width * 0.8,
-                color: thm.sepcolor,
-              ),
-              SizedBox(height: 25),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.05,
-                width: MediaQuery.of(context).size.width * 0.90,
-                child: FloatingActionButton(
-                  heroTag: 'settings_report_btn',
-                  key: ValueKey("report"),
-                  elevation: 1,
-                  focusElevation: 0,
-                  hoverElevation: 0,
-                  highlightElevation: 0,
-                  disabledElevation: 0,
-                  backgroundColor: thm.cardcolor,
-                  child: Text(
-                    "Report a Bug or Add courses",
-                    style: TextStyle(
-                      fontFamily: "Montserrat",
-                      fontSize: 18,
-                      color: thm.highcolor,
-                    ),
-                  ),
-                    onPressed: () async {
-                      await launchUrl(Uri.parse('https://forms.gle/t852T4DwNzoDN8tH6'));
-                    },
-                ),
-              ),
-
-              Spacer(flex: 1),
-        if(!kIsWeb && Platform.isAndroid)
-        SizedBox(
-          height: MediaQuery.of(context).size.height * 0.05,
-          width: MediaQuery.of(context).size.width * 0.90,
-          child: FloatingActionButton(
-            heroTag: 'settings_review_btn',
-            key: ValueKey("report"),
-            elevation: 1,
-            focusElevation: 0,
-            hoverElevation: 0,
-            highlightElevation: 0,
-            disabledElevation: 0,
-            backgroundColor: thm.cardcolor,
-            child: Text(
-              "Write a Review",
-              style: TextStyle(
-                fontFamily: "Montserrat",
-                fontSize: 18,
-                color: thm.highcolor,
-              ),
+          ListView(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).padding.bottom + 16,
             ),
-              onPressed: ()async {
-                final InAppReview inAppReview = InAppReview.instance;
-                if (await inAppReview.isAvailable()) {
-                  await inAppReview.requestReview();
-                }
-                else{
+            children: [
+              _groupHeader(thm, "Degree"),
+              _tile(
+                thm,
+                icon: Icons.school_outlined,
+                title: "Dual Discipline",
+                subtitle: "Changing this will delete your grades",
+                trailing: _dualDisciplineField(thm),
+              ),
+              _tile(
+                thm,
+                icon: Icons.menu_book_outlined,
+                title: "Discipline",
+                trailing: _disciplineField(thm),
+              ),
+              _tile(
+                thm,
+                icon: Icons.groups_outlined,
+                title: "Batch",
+                subtitle:
+                    batch >= emptyCurriculumBatch
+                        ? "Courses are not pre-loaded for this batch"
+                        : null,
+                trailing: _batchField(thm),
+              ),
+              _tile(
+                thm,
+                key: ValueKey("Reset"),
+                icon: Icons.refresh_rounded,
+                title: "Reset Courses",
+                subtitle: "Reloads the course list and deletes grades",
+                trailing: Icon(
+                  Icons.chevron_right_rounded,
+                  color: thm.unscolor,
+                ),
+                onTap: () => _confirmReset(thm),
+              ),
+              SizedBox(height: 6),
+              _groupDivider(thm),
+              _groupHeader(thm, "Appearance"),
+              _tile(
+                thm,
+                icon: Icons.palette_outlined,
+                title: "Theme",
+                trailing: _themeField(thm),
+              ),
+              _tile(
+                thm,
+                key: ValueKey("profile"),
+                icon: Icons.person_outline_rounded,
+                title: "Profile Names",
+                subtitle: "$profile1n  /  $profile2n",
+                trailing: Icon(
+                  Icons.chevron_right_rounded,
+                  color: thm.unscolor,
+                ),
+                onTap: () {
+                  setState(() {
+                    _isProfileCardOpen = true;
+                  });
+                },
+              ),
+              SizedBox(height: 6),
+              _groupDivider(thm),
+              _groupHeader(thm, "Help & Feedback"),
+              _tile(
+                thm,
+                key: ValueKey("report"),
+                icon: Icons.bug_report_outlined,
+                title: "Report a Bug or Add Courses",
+                subtitle: "Opens a Google Form",
+                trailing: Icon(
+                  Icons.open_in_new_rounded,
+                  size: 18,
+                  color: thm.unscolor,
+                ),
+                onTap: () async {
                   await launchUrl(
-                    Uri.parse(
-                        'https://play.google.com/store/apps/details?id=com.srijen.cgpa_calculator'),
+                    Uri.parse('https://forms.gle/t852T4DwNzoDN8tH6'),
                   );
-                }
-              }
-          ),
-        ),
-              SizedBox(height: 10),
-              Text(
-                "Made by Srijen Raja",
-                style: TextStyle(
-                  fontSize: 14,
-                  fontFamily: 'Montserrat',
-                  color: thm.textcolor,
-                ),
+                },
               ),
-              Text(
-                "srijenapps@gmail.com",
-                style: TextStyle(
-                  fontSize: 10,
-                  fontFamily: 'Montserrat',
-                  color: thm.textcolor,
+              if (!kIsWeb && Platform.isAndroid)
+                _tile(
+                  thm,
+                  key: ValueKey("review"),
+                  icon: Icons.star_outline_rounded,
+                  title: "Write a Review",
+                  subtitle: "Rate the app on the Play Store",
+                  trailing: Icon(
+                    Icons.open_in_new_rounded,
+                    size: 18,
+                    color: thm.unscolor,
+                  ),
+                  onTap: () async {
+                    final InAppReview inAppReview = InAppReview.instance;
+                    if (await inAppReview.isAvailable()) {
+                      await inAppReview.requestReview();
+                    } else {
+                      await launchUrl(
+                        Uri.parse(
+                          'https://play.google.com/store/apps/details?id=com.srijen.cgpa_calculator',
+                        ),
+                      );
+                    }
+                  },
                 ),
+              _tile(
+                thm,
+                icon: Icons.mail_outline_rounded,
+                title: "Contact",
+                subtitle: "srijenapps@gmail.com",
+                trailing: Icon(
+                  Icons.open_in_new_rounded,
+                  size: 18,
+                  color: thm.unscolor,
+                ),
+                onTap: () async {
+                  await launchUrl(Uri.parse('mailto:srijenapps@gmail.com'));
+                },
               ),
-              SizedBox(height: MediaQuery.of(context).padding.bottom + 5),
             ],
           ),
           AnimatedSwitcher(
@@ -671,9 +697,7 @@ class _SettingsState extends State<Settings> {
                                               ),
                                               style: TextStyle(
                                                 fontFamily: 'Montserrat',
-                                                color:
-                                                    thm
-                                                        .textcolor,
+                                                color: thm.textcolor,
                                               ),
                                             ),
                                           ),
@@ -717,9 +741,7 @@ class _SettingsState extends State<Settings> {
                                               ),
                                               style: TextStyle(
                                                 fontFamily: 'Montserrat',
-                                                color:
-                                                    thm
-                                                        .textcolor,
+                                                color: thm.textcolor,
                                               ),
                                             ),
                                           ),
@@ -741,7 +763,8 @@ class _SettingsState extends State<Settings> {
                                                 ).size.width *
                                                 0.8,
                                             child: FloatingActionButton(
-                                              heroTag: 'settings_update_profile_btn',
+                                              heroTag:
+                                                  'settings_update_profile_btn',
                                               backgroundColor: thm.butcolor,
                                               child: Text(
                                                 "Update Profile",
@@ -749,12 +772,10 @@ class _SettingsState extends State<Settings> {
                                                   fontFamily: 'Montserrat',
                                                   fontWeight: FontWeight.normal,
                                                   fontSize: 22,
-                                                  color:
-                                                      thm
-                                                          .highcolor,
+                                                  color: thm.highcolor,
                                                 ),
                                               ),
-                                              onPressed: () async{
+                                              onPressed: () async {
                                                 setState(() {
                                                   profile1n =
                                                       (myController1

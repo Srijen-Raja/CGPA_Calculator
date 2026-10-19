@@ -1,4 +1,4 @@
-import 'package:cgpa_calculator/constants.dart';
+﻿import 'package:cgpa_calculator/constants.dart';
 import 'package:cgpa_calculator/course.dart';
 import 'package:cgpa_calculator/mastercourselist.dart';
 import 'package:cgpa_calculator/settings.dart';
@@ -52,7 +52,6 @@ class _OffshootState extends State<Offshoot> {
   };
   final distBwData = 8.0;
   String currentsorto = "Sort by Grades(Des)";
-  bool _isSearched = false;
   bool _isClosing = false;
   bool _isCardOpen = false;
   bool _isrightswipe = false;
@@ -182,7 +181,7 @@ class _OffshootState extends State<Offshoot> {
                       color: thm.textcolor,
                     ),),
                     SizedBox(height: distBwData),
-                    Text("Credits",textAlign: TextAlign.left, style: TextStyle(
+                    Text("$creditLabel",textAlign: TextAlign.left, style: TextStyle(
                       fontFamily: 'Montserrat',
                       fontSize: 20,
                       fontWeight: FontWeight.normal,
@@ -239,7 +238,6 @@ class _OffshootState extends State<Offshoot> {
                         ),
                         onPressed: () {
                           setState(() {
-                            _isSearched = false;
                             _isCardOpen = true;
                           });
                         },
@@ -319,7 +317,7 @@ class _OffshootState extends State<Offshoot> {
                                 Icons.keyboard_arrow_down_outlined,
                                 color: thm.textcolor,
                               ),
-                              label: "Asc Credits",
+                              label: "Asc $creditLabel",
                               style: MenuItemButton.styleFrom(
                                 textStyle: TextStyle(fontFamily: 'Montserrat'),
                                 foregroundColor: thm.textcolor,
@@ -333,7 +331,7 @@ class _OffshootState extends State<Offshoot> {
                                 Icons.keyboard_arrow_up_outlined,
                                 color: thm.textcolor,
                               ),
-                              label: "Desc Credits",
+                              label: "Desc $creditLabel",
                               style: MenuItemButton.styleFrom(
                                 textStyle: TextStyle(fontFamily: 'Montserrat'),
                                 foregroundColor: thm.textcolor,
@@ -462,7 +460,7 @@ class _OffshootState extends State<Offshoot> {
                                       ),
                                     ),
                                     Text(
-                                      "Credits",
+                                      "$creditLabel",
                                       style: TextStyle(
                                         fontFamily: 'Montserrat',
                                         fontSize: 16,
@@ -760,7 +758,7 @@ class _OffshootState extends State<Offshoot> {
                                                     : offshootList[index].grade2;
                                             String currentGradeStr = gradecalc(currentGrade);
                                             _initialItemIndex = grades.indexOf(currentGradeStr);
-                                            if (_initialItemIndex == -1 && currentGradeStr == "–")
+                                            if (_initialItemIndex == -1 && currentGradeStr == "â€“")
                                               _initialItemIndex = grades.indexOf("GD");
                                             if (_initialItemIndex == -1) _initialItemIndex = 0;
 
@@ -1018,7 +1016,7 @@ class _OffshootState extends State<Offshoot> {
                                                                     offshootList[index]
                                                                         .grade1,
                                                                   )
-                                                                  : "–")
+                                                                  : "â€“")
                                                               .length) ==
                                                           2
                                                       ? (offshootList[index]
@@ -1028,7 +1026,7 @@ class _OffshootState extends State<Offshoot> {
                                                             offshootList[index]
                                                                 .grade1,
                                                           )
-                                                          : "–" + "‎ "
+                                                          : "â€“" + "â€Ž "
                                                       : ((offshootList[index]
                                                                       .grade1 >
                                                                   0)
@@ -1036,8 +1034,8 @@ class _OffshootState extends State<Offshoot> {
                                                                 offshootList[index]
                                                                     .grade1,
                                                               )
-                                                              : "–") +
-                                                          "‎ ‎ ",
+                                                              : "â€“") +
+                                                          "â€Ž â€Ž ",
 
                                                   textAlign: TextAlign.right,
                                                   style: TextStyle(
@@ -1058,7 +1056,7 @@ class _OffshootState extends State<Offshoot> {
                                               SizedBox(
                                                 width: wid * 0.0945,
                                                 child: Text(
-                                                  "‎" +
+                                                  "â€Ž" +
                                                       ((offshootList[index]
                                                                   .grade2 >
                                                               0)
@@ -1066,7 +1064,7 @@ class _OffshootState extends State<Offshoot> {
                                                             offshootList[index]
                                                                 .grade2,
                                                           )
-                                                          : "–"),
+                                                          : "â€“"),
                                                   textAlign: TextAlign.left,
                                                   style: TextStyle(
                                                     fontSize: 20,
@@ -1215,10 +1213,7 @@ class _OffshootState extends State<Offshoot> {
                                           SizedBox(
                                             width: wid * 0.34,
                                             child: DropdownMenu(
-                                              initialSelection:
-                                                  (_isSearched)
-                                                      ? addcourse
-                                                      : "AN",
+                                              initialSelection: addcourse,
                                               textStyle: TextStyle(
                                                 fontFamily: 'Montserrat',
                                                 fontSize: 15,
@@ -1250,7 +1245,7 @@ class _OffshootState extends State<Offshoot> {
                                                   dropdownid.sort(
                                                     (a, b) => a.compareTo(b),
                                                   );
-                                                  addcourseid = dropdownid[0];
+                                                  addcourseid = dropdownid.isNotEmpty ? dropdownid[0] : "";
                                                   //electiveSetter();
                                                 });
                                               },
@@ -1286,7 +1281,7 @@ class _OffshootState extends State<Offshoot> {
                                                     ),
                                               ),
                                               dropdownMenuEntries:
-                                                  depts
+                                                  activeDepts
                                                       .map(
                                                         (
                                                           id,
@@ -1310,10 +1305,7 @@ class _OffshootState extends State<Offshoot> {
                                           SizedBox(
                                             width: wid * 0.27,
                                             child: DropdownMenu(
-                                              initialSelection:
-                                                  (_isSearched)
-                                                      ? addcourseid
-                                                      : dropdownid[0],
+                                              initialSelection: addcourseid,
                                               textStyle: TextStyle(
                                                 fontFamily: 'Montserrat',
                                                 fontSize: 15,
@@ -1498,7 +1490,6 @@ class _OffshootState extends State<Offshoot> {
                                                     ),
                                                     onTap: () {
                                                       setState(() {
-                                                        _isSearched = true;
                                                         addcourse =
                                                             item.id.split(
                                                               " ",
@@ -1901,7 +1892,6 @@ class _OffshootState extends State<Offshoot> {
                                                 ),
                                               ),
                                               onPressed: () {
-                                                _isSearched = false;
                                                 setState(() {
                                                   if (offshootList.any(
                                                     (course) =>
@@ -1935,7 +1925,8 @@ class _OffshootState extends State<Offshoot> {
                                                           (course) =>
                                                               course.id ==
                                                               "$addcourse $addcourseid",
-                                                        );
+                                                          orElse: () => Mastercourselist(id: "", title: "", credits: 0),
+                                                          );
                                                     if (selectedprofileo == 1) {
                                                       addOrUpdateCourseOffshoot(
                                                         Course(

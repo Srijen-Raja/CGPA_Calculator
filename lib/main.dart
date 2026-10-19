@@ -41,8 +41,9 @@ void main() async {
   Hive.registerAdapter(CourseAdapter());
   //await Hive.openBox<Course>('coursesBox');
   await basicStartup();
-  if (!kIsWeb) {
-    mcourselist = await loadMcourselistFromFile();
+  if (!kIsWeb || usesCreditHours) {
+    mcourselist = await loadMcourselistFromFile(ch: usesCreditHours);
+    resetAddCourseSelection();
   }
   //await initializeCourses();
   //await Future.delayed(Duration(milliseconds: 40));
