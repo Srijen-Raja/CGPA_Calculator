@@ -757,7 +757,7 @@ final List<Mastercourselist> bundledMcourselist = [
     credits: 3,
   ),
   Mastercourselist(
-    title: "Human â€“ Computer Interaction",
+    title: "Human - Computer Interaction",
     id: "BITS F364",
     credits: 3,
   ),
@@ -1911,7 +1911,7 @@ final List<Mastercourselist> bundledMcourselist = [
     credits: 3,
   ),
   Mastercourselist(
-    title: "Philosophy of NÄgÄrjuna",
+    title: "Philosophy of Nāgārjuna",
     id: "HSS F246",
     credits: 3,
   ),
@@ -1988,12 +1988,12 @@ final List<Mastercourselist> bundledMcourselist = [
     credits: 3,
   ),
   Mastercourselist(
-    title: "Musicology â€“ An â€“ Introduction",
+    title: "Musicology - An - Introduction",
     id: "HSS F329",
     credits: 3,
   ),
   Mastercourselist(title: "Appreciation of Art", id: "HSS F330", credits: 3),
-  Mastercourselist(title: "Sankaraâ€™s Thoughts", id: "HSS F331", credits: 3),
+  Mastercourselist(title: "Sankara's Thoughts", id: "HSS F331", credits: 3),
   Mastercourselist(title: "Cinematic Art", id: "HSS F332", credits: 3),
   Mastercourselist(title: "Comparative Religion", id: "HSS F333", credits: 3),
   Mastercourselist(title: "Srimad Bhagavad Gita", id: "HSS F334", credits: 3),

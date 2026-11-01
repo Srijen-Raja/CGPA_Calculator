@@ -758,7 +758,7 @@ class _OffshootState extends State<Offshoot> {
                                                     : offshootList[index].grade2;
                                             String currentGradeStr = gradecalc(currentGrade);
                                             _initialItemIndex = grades.indexOf(currentGradeStr);
-                                            if (_initialItemIndex == -1 && currentGradeStr == "â€“")
+                                            if (_initialItemIndex == -1 && (currentGradeStr == "-" || currentGradeStr == "–"))
                                               _initialItemIndex = grades.indexOf("GD");
                                             if (_initialItemIndex == -1) _initialItemIndex = 0;
 
@@ -1006,74 +1006,55 @@ class _OffshootState extends State<Offshoot> {
                                                 MainAxisAlignment.center,
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.center,
-                                            children: [
-                                              SizedBox(
-                                                width: wid * 0.0945,
-                                                child: Text(
-                                                  (((offshootList[index].grade1 >
-                                                                      0)
-                                                                  ? gradecalc(
-                                                                    offshootList[index]
-                                                                        .grade1,
-                                                                  )
-                                                                  : "â€“")
-                                                              .length) ==
-                                                          2
-                                                      ? (offshootList[index]
-                                                                  .grade1 >
-                                                              0)
+                                                children: [
+                                                  SizedBox(
+                                                    width: wid * 0.0945,
+                                                    child: Text(
+                                                      (offshootList[index].grade1 > 0)
                                                           ? gradecalc(
                                                             offshootList[index]
                                                                 .grade1,
                                                           )
-                                                          : "â€“" + "â€Ž "
-                                                      : ((offshootList[index]
-                                                                      .grade1 >
-                                                                  0)
-                                                              ? gradecalc(
-                                                                offshootList[index]
-                                                                    .grade1,
-                                                              )
-                                                              : "â€“") +
-                                                          "â€Ž â€Ž ",
-
-                                                  textAlign: TextAlign.right,
-                                                  style: TextStyle(
-                                                    fontSize: 20,
-                                                    fontFamily: 'Montserrat',
-                                                    color: thm.highcolor,
+                                                          : "-",
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                        fontSize: 20,
+                                                        fontFamily:
+                                                            'Montserrat',
+                                                        color: thm.highcolor,
+                                                      ),
+                                                    ),
                                                   ),
-                                                ),
-                                              ),
-                                              Container(
-                                                width: 1,
-                                                height: 60,
-                                                color: thm.sepcolor,
-                                                margin: EdgeInsets.symmetric(
-                                                  horizontal: 5,
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                width: wid * 0.0945,
-                                                child: Text(
-                                                  "â€Ž" +
-                                                      ((offshootList[index]
-                                                                  .grade2 >
-                                                              0)
+                                                  Container(
+                                                    width: 1,
+                                                    height: 60,
+                                                    color: thm.sepcolor,
+                                                    margin:
+                                                        EdgeInsets.symmetric(
+                                                          horizontal: 5,
+                                                        ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: wid * 0.0945,
+                                                    child: Text(
+                                                      (offshootList[index].grade2 > 0)
                                                           ? gradecalc(
                                                             offshootList[index]
                                                                 .grade2,
                                                           )
-                                                          : "â€“"),
-                                                  textAlign: TextAlign.left,
-                                                  style: TextStyle(
-                                                    fontSize: 20,
-                                                    fontFamily: 'Montserrat',
-                                                    color: thm.highcolor,
+                                                          : "-",
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                        fontSize: 20,
+                                                        fontFamily:
+                                                            'Montserrat',
+                                                        color: thm.highcolor,
+                                                      ),
+                                                    ),
                                                   ),
-                                                ),
-                                              ),
-                                            ],
+                                                ],
                                           ),
                                         ),
                                 onTap: () {

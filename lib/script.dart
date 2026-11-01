@@ -1,4 +1,4 @@
-﻿// import 'dart:ffi';
+// import 'dart:ffi';
 import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
@@ -630,7 +630,7 @@ String gradecalc(int s) {
       : (s == -3)
       ? "GD"
       : (s == -5)
-      ? "â€“"
+      ? "-"
       : "?";
 }
 
@@ -1232,12 +1232,19 @@ Future<String> saveDataAsImage(
 
 
 Future<bool> requestAllStoragePermissions() async {
-  // Try traditional Storage permission
-  if(kIsWeb){
+  if (kIsWeb) {
     return true;
   }
-  if(Platform.isAndroid) {
-    var status = await Permission.photos.request();
+  if (Platform.isAndroid) {
+    // Saving goes through MediaStore, which on Android 10 (API 29) and above
+    // needs no permission for files the app writes itself. Asking for the
+    // photo permission there would also break Play's photo/video policy.
+    final androidInfo = await DeviceInfoPlugin().androidInfo;
+    if (androidInfo.version.sdkInt >= 29) {
+      return true;
+    }
+
+    var status = await Permission.storage.request();
 
     if (status.isGranted) {
       return true;

@@ -1,4 +1,4 @@
-﻿import 'package:cgpa_calculator/constants.dart';
+import 'package:cgpa_calculator/constants.dart';
 import 'package:cgpa_calculator/course.dart';
 import 'package:cgpa_calculator/settings.dart';
 import 'package:flutter/material.dart';
@@ -127,7 +127,7 @@ class _AnalyticsState extends State<Analytics> {
                 ),
                 Text(
                   "${courses.length} course${courses.length == 1 ? '' : 's'}"
-                  "  Â·  ${credits.toString().replaceAll('.0', '')} credits",
+                  "  ·  ${credits.toString().replaceAll('.0', '')} credits",
                   style: TextStyle(
                     fontFamily: 'Montserrat',
                     fontSize: 12,
@@ -180,7 +180,7 @@ class _AnalyticsState extends State<Analytics> {
                             ),
                           ),
                           subtitle: Text(
-                            "${c.id}  Â·  Sem ${c.sem}  Â·  "
+                            "${c.id}  ·  Sem ${c.sem}  ·  "
                             "${c.credits.toString().replaceAll('.0', '')} cr",
                             style: TextStyle(
                               fontFamily: 'Montserrat',

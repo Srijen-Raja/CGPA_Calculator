@@ -1,4 +1,4 @@
-﻿part of 'home_page.dart';
+part of 'home_page.dart';
 // ignore_for_file: invalid_use_of_protected_member
 
 extension MainUiExtension on _MyHomePageState {
@@ -1192,7 +1192,8 @@ extension MainUiExtension on _MyHomePageState {
                                                     initialItemIndex = grades
                                                         .indexOf(currentGradeStr);
                                                     if (initialItemIndex == -1 &&
-                                                        currentGradeStr == "â€“")
+                                                        (currentGradeStr == "-" ||
+                                                            currentGradeStr == "–"))
                                                       initialItemIndex = grades
                                                           .indexOf("GD");
                                                     if (initialItemIndex == -1)
@@ -1523,35 +1524,14 @@ extension MainUiExtension on _MyHomePageState {
                                                     SizedBox(
                                                       width: wid * 0.0945,
                                                       child: Text(
-                                                        (((sitems[index].grade1 >
-                                                                            0)
-                                                                        ? gradecalc(
-                                                                          sitems[index]
-                                                                              .grade1,
-                                                                        )
-                                                                        : "â€“")
-                                                                    .length) ==
-                                                                2
-                                                            ? (sitems[index]
-                                                                        .grade1 >
-                                                                    0)
-                                                                ? gradecalc(
-                                                                  sitems[index]
-                                                                      .grade1,
-                                                                )
-                                                                : "â€“" + "â€Ž "
-                                                            : ((sitems[index]
-                                                                            .grade1 >
-                                                                        0)
-                                                                    ? gradecalc(
-                                                                      sitems[index]
-                                                                          .grade1,
-                                                                    )
-                                                                    : "â€“") +
-                                                                "â€Ž â€Ž ",
-
+                                                        (sitems[index].grade1 > 0)
+                                                            ? gradecalc(
+                                                              sitems[index]
+                                                                  .grade1,
+                                                            )
+                                                            : "-",
                                                         textAlign:
-                                                            TextAlign.right,
+                                                            TextAlign.center,
                                                         style: TextStyle(
                                                           fontSize: 20,
                                                           fontFamily:
@@ -1572,17 +1552,14 @@ extension MainUiExtension on _MyHomePageState {
                                                     SizedBox(
                                                       width: wid * 0.0945,
                                                       child: Text(
-                                                        "â€Ž" +
-                                                            ((sitems[index]
-                                                                        .grade2 >
-                                                                    0)
-                                                                ? gradecalc(
-                                                                  sitems[index]
-                                                                      .grade2,
-                                                                )
-                                                                : "â€“"),
+                                                        (sitems[index].grade2 > 0)
+                                                            ? gradecalc(
+                                                              sitems[index]
+                                                                  .grade2,
+                                                            )
+                                                            : "-",
                                                         textAlign:
-                                                            TextAlign.left,
+                                                            TextAlign.center,
                                                         style: TextStyle(
                                                           fontSize: 20,
                                                           fontFamily:

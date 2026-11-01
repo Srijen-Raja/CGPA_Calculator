@@ -1,4 +1,4 @@
-﻿part of 'home_page.dart';
+part of 'home_page.dart';
 // ignore_for_file: invalid_use_of_protected_member
 
 
@@ -180,7 +180,7 @@ extension OverlaysExtension on _MyHomePageState {
                                         ),
                                       ),
                                       subtitle: Text(
-                                        "${c.id}  Â·  "
+                                        "${c.id}  ·  "
                                         "${c.credits.toString().replaceAll('.0', '')} cr",
                                         style: TextStyle(
                                           fontFamily: 'Montserrat',
